@@ -14,7 +14,9 @@ SpriteGraphicsImplementation::~SpriteGraphicsImplementation() = default;
 
 void SpriteGraphicsImplementation::DrawImpl(const Entity &entity)
 {
-  sprite_->Draw(Vec2(entity.pose_.x, entity.pose_.y), entity.size_, entity.pose_.z - kPi2);
+  const auto &pose = entity.pose();
+
+  sprite_->Draw(Vec2(pose.x, pose.y), entity.size(), pose.z - kPi2);
 }
 
 } // namespace blasted_city

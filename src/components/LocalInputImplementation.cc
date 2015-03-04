@@ -46,30 +46,33 @@ void LocalInputImplementation::Init()
 
 void LocalInputImplementation::UpdateImpl(Entity &entity)
 {
-  auto *keys = Window::instance()->key_states();
+  auto       *keys  = Window::instance()->key_states();
+  auto        pose  = entity.pose();
+  const auto &speed = entity.speed();
 
   if (keys[g_key_map_table[kMoveForward]]) {
-    entity.pose_.x += entity.speed_.x * std::cos(entity.pose_.z);
-    entity.pose_.y += entity.speed_.x * std::sin(entity.pose_.z);
+    pose.x += speed.x * std::cos(pose.z);
+    pose.y += speed.x * std::sin(pose.z);
   }
   if (keys[g_key_map_table[kMoveBackward]]) {
-    entity.pose_.x -= entity.speed_.x * std::cos(entity.pose_.z);
-    entity.pose_.y -= entity.speed_.x * std::sin(entity.pose_.z);
+    pose.x -= speed.x * std::cos(pose.z);
+    pose.y -= speed.x * std::sin(pose.z);
   }
   if (keys[g_key_map_table[kMoveLeft]]) {
-    entity.pose_.x -= entity.speed_.x * std::cos(entity.pose_.z + kPi2);
-    entity.pose_.y -= entity.speed_.x * std::sin(entity.pose_.z + kPi2);
+    pose.x -= speed.x * std::cos(pose.z + kPi2);
+    pose.y -= speed.x * std::sin(pose.z + kPi2);
   }
   if (keys[g_key_map_table[kMoveRight]]) {
-    entity.pose_.x += entity.speed_.x * std::cos(entity.pose_.z + kPi2);
-    entity.pose_.y += entity.speed_.x * std::sin(entity.pose_.z + kPi2);
+    pose.x += speed.x * std::cos(pose.z + kPi2);
+    pose.y += speed.x * std::sin(pose.z + kPi2);
   }
   if (keys[g_key_map_table[kTurnLeft]]) {
-    entity.pose_.z -= entity.speed_.y;
+    pose.z -= speed.y;
   }
   if (keys[g_key_map_table[kTurnRight]]) {
-    entity.pose_.z += entity.speed_.y;
+    pose.z += speed.y;
   }
+  entity.set_pose(pose);
   if (keys[g_key_map_table[kAttack]]) {
     static_cast<Soldier &>(entity).Attack();
   }

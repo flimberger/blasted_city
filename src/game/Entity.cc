@@ -18,6 +18,36 @@ void Entity::Update()
   UpdateImpl();
 }
 
+const Vec3 &Entity::pose() const
+{
+  return pose_;
+}
+
+const Vec2 &Entity::size() const
+{
+  return size_;
+}
+
+const Vec2 &Entity::speed() const
+{
+  return speed_;
+}
+
+void Entity::set_pose(Vec3 pose)
+{
+  pose_ = std::move(pose);
+}
+
+void Entity::set_size(Vec2 size)
+{
+  size_ = std::move(size);
+}
+
+void Entity::set_speed(Vec2 speed)
+{
+  speed_ = std::move(speed);
+}
+
 void Entity::UpdateImpl()
 {
   input_->Update(*this);

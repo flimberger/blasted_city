@@ -23,10 +23,13 @@ class Entity
 
   void Update();
 
-  // only public for the components, maybe use a manipulator proxy?
-  Vec3 pose_; // xy := position, z := rotation
-  Vec2 size_;
-  Vec2 speed_; // x := linear, y := rotational
+  const Vec3 &pose() const;
+  const Vec2 &size() const;
+  const Vec2 &speed() const;
+
+  void set_pose(Vec3 pose);
+  void set_size(Vec2 size);
+  void set_speed(Vec2 speed);
 
  protected:
   Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec2 size);
@@ -34,6 +37,10 @@ class Entity
   virtual void UpdateImpl();
 
  private:
+  Vec3 pose_; // xy := position, z := rotation
+  Vec2 size_;
+  Vec2 speed_; // x := linear, y := rotational
+
   GraphicsPtr  graphics_;
   InputPtr     input_;
   PhysicsPtr   physics_;

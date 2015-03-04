@@ -43,7 +43,7 @@ Soldier::Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, uint1
     kill_count_(0),
     rank_(kRecruit)
 {
-  Entity::speed_ = Vec2(2.0, 0.05);
+  set_speed(Vec2(2.0, 0.05));
 }
 
 Soldier::~Soldier() = default;

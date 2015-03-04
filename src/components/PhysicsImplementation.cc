@@ -11,20 +11,23 @@ PhysicsImplementation::~PhysicsImplementation() = default;
 
 void PhysicsImplementation::UpdateImpl(Entity &entity)
 {
-  auto *win = Window::instance();
+  auto       *win  = Window::instance();
+  auto        pose = entity.pose();
+  const auto &size = entity.size();
 
-  if (entity.pose_.x < 0.0f) {
-    entity.pose_.x = 0.0f;
+  if (pose.x < 0.0f) {
+    pose.x = 0.0f;
   }
-  if (entity.pose_.y < 0.0f) {
-    entity.pose_.y = 0.0f;
+  if (pose.y < 0.0f) {
+    pose.y = 0.0f;
   }
-  if (entity.pose_.x > win->width() - entity.size_.x) {
-    entity.pose_.x = win->width() - entity.size_.x;
+  if (pose.x > win->width() - size.x) {
+    pose.x = win->width() - size.x;
   }
-  if (entity.pose_.y > win->height() - entity.size_.y) {
-    entity.pose_.y = win->height() - entity.size_.y;
+  if (pose.y > win->height() - size.y) {
+    pose.y = win->height() - size.y;
   }
+  entity.set_pose(pose);
 }
 
 } // namespace blasted_city
