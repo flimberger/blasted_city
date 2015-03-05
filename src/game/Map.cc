@@ -1,10 +1,12 @@
 #include "Map.h"
 
+#include "../engine/Window.h"
+
 namespace blasted_city {
 
 Map::Map()
-  : height_(0),
-    width_(0)
+  : height_(Window::instance()->height()),
+    width_(Window::instance()->width())
 {}
 
 Map::~Map() = default;

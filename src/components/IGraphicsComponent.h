@@ -7,15 +7,15 @@ namespace blasted_city {
 
 class Entity;
 
-class GraphicsComponent
+class IGraphicsComponent
 {
- public:
-  virtual ~GraphicsComponent();
+public:
+    virtual ~IGraphicsComponent();
 
-  void Draw(const Entity &entity);
+    void Draw(const Entity &entity);
 
- private:
-  virtual void DrawImpl(const Entity &entity) = 0;
+private:
+    virtual void DrawImpl(const Entity &entity) = 0;
 };
 
 } // namespace blasted_city

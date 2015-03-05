@@ -5,15 +5,15 @@ namespace blasted_city {
 
 class Entity;
 
-class InputComponent
+class IControlComponent
 {
- public:
-  virtual ~InputComponent();
+public:
+    virtual ~IControlComponent();
 
-  void Update(Entity &entity);
+    void Update(Entity &entity);
 
- private:
-  virtual void UpdateImpl(Entity &entity) = 0;
+private:
+    virtual void UpdateImpl(Entity &entity) = 0;
 };
 
 } // namespace blasted_city

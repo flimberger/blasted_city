@@ -1,18 +1,22 @@
 #ifndef BLASTED_CITY_COMPONENTS_PHYSICSIMPLEMENTATION_H_
 #define BLASTED_CITY_COMPONENTS_PHYSICSIMPLEMENTATION_H_
 
-#include "PhysicsComponent.h"
+#include "IPhysicsComponent.h"
 
 namespace blasted_city {
 
-class PhysicsImplementation : public PhysicsComponent
+class Map;
+
+class PhysicsImplementation : public IPhysicsComponent
 {
 public:
-    PhysicsImplementation();
+    PhysicsImplementation(Map *map);
     ~PhysicsImplementation();
 
 private:
  virtual void UpdateImpl(Entity &entity) override;
+
+    Map  *m_map;
 };
 
 } // namespace blasted_city

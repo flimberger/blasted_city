@@ -7,7 +7,8 @@
 namespace blasted_city {
 
 SpriteGraphicsImplementation::SpriteGraphicsImplementation(const SpritePtr &sprite)
-  : sprite_(sprite)
+  : IGraphicsComponent(),
+    sprite_(sprite)
 {}
 
 SpriteGraphicsImplementation::~SpriteGraphicsImplementation() = default;

@@ -1,8 +1,8 @@
 set(blasted_city_components_SRCS
-  GraphicsComponent.cc
-  InputComponent.cc
+  IGraphicsComponent.cpp
+  IControlComponent.cpp
+  IPhysicsComponent.cpp
   LocalInputImplementation.cc
-  PhysicsComponent.cc
   PhysicsImplementation.cc
   SpriteGraphicsImplementation.cc
 )

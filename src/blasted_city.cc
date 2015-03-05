@@ -9,6 +9,7 @@
 #include "engine/Texture.h"
 #include "engine/Window.h"
 
+#include "game/Map.h"
 #include "game/World.h"
 #include "game/classes/Burner.h"
 
@@ -23,7 +24,7 @@ static constexpr auto kMSperFrame = double(1000.0/60.0);
 
 int main() {
   auto window  = Window::instance();
-  auto world   = std::unique_ptr<World>(new World);
+  auto world   = std::unique_ptr<World>(new World(MapPtr(new Map)));
 
   {
     auto vertex_shader   = ReadTextFile(
@@ -39,9 +40,9 @@ int main() {
 
     sprite->Init();
 
-    auto graphics = std::unique_ptr<GraphicsComponent>(new SpriteGraphicsImplementation(sprite));
-    auto input    = std::unique_ptr<InputComponent>(new LocalInputImplementation);
-    auto physics  = std::unique_ptr<PhysicsComponent>(new PhysicsImplementation);
+    auto graphics = std::unique_ptr<IGraphicsComponent>(new SpriteGraphicsImplementation(sprite));
+    auto input    = std::unique_ptr<IControlComponent>(new LocalInputImplementation);
+    auto physics  = std::unique_ptr<IPhysicsComponent>(new PhysicsImplementation(world->GetMap()));
     auto player   = std::unique_ptr<Entity>(new Burner(std::move(graphics), std::move(input),
                                                        std::move(physics), 10));
 

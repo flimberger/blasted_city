@@ -1,17 +1,19 @@
 #include "PhysicsImplementation.h"
 
-#include "../engine/Window.h"
-
 #include "../game/Entity.h"
+#include "../game/Map.h"
 
 namespace blasted_city {
 
-PhysicsImplementation::PhysicsImplementation()  = default;
+PhysicsImplementation::PhysicsImplementation(Map *map)
+  : IPhysicsComponent(),
+    m_map(map)
+{}
+
 PhysicsImplementation::~PhysicsImplementation() = default;
 
 void PhysicsImplementation::UpdateImpl(Entity &entity)
 {
-  auto       *win  = Window::instance();
   auto        pose = entity.pose();
   const auto &size = entity.size();
 
@@ -21,11 +23,11 @@ void PhysicsImplementation::UpdateImpl(Entity &entity)
   if (pose.y < 0.0f) {
     pose.y = 0.0f;
   }
-  if (pose.x > win->width() - size.x) {
-    pose.x = win->width() - size.x;
+  if (pose.x > m_map->width() - size.x) {
+    pose.x = m_map->width() - size.x;
   }
-  if (pose.y > win->height() - size.y) {
-    pose.y = win->height() - size.y;
+  if (pose.y > m_map->height() - size.y) {
+    pose.y = m_map->height() - size.y;
   }
   entity.set_pose(pose);
 }

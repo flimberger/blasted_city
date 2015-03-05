@@ -41,9 +41,6 @@ static uint32_t g_key_map_table[] = {
 LocalInputImplementation::LocalInputImplementation() = default;
 LocalInputImplementation::~LocalInputImplementation() = default;
 
-void LocalInputImplementation::Init()
-{}
-
 void LocalInputImplementation::UpdateImpl(Entity &entity)
 {
   auto       *keys  = Window::instance()->key_states();

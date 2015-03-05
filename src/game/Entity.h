@@ -3,17 +3,17 @@
 
 #include "../math.h"
 
-#include "../components/GraphicsComponent.h"
-#include "../components/InputComponent.h"
-#include "../components/PhysicsComponent.h"
+#include "../components/IGraphicsComponent.h"
+#include "../components/IControlComponent.h"
+#include "../components/IPhysicsComponent.h"
 
 #include <memory>
 
 namespace blasted_city {
 
-using GraphicsPtr = std::unique_ptr<GraphicsComponent>;
-using InputPtr    = std::unique_ptr<InputComponent>;
-using PhysicsPtr  = std::unique_ptr<PhysicsComponent>;
+using GraphicsPtr = std::unique_ptr<IGraphicsComponent>;
+using InputPtr    = std::unique_ptr<IControlComponent>;
+using PhysicsPtr  = std::unique_ptr<IPhysicsComponent>;
 
 class Entity
 {

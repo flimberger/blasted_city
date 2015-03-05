@@ -5,10 +5,10 @@ namespace blasted_city {
 
 class Entity;
 
-class PhysicsComponent
+class IPhysicsComponent
 {
  public:
-  virtual ~PhysicsComponent();
+  virtual ~IPhysicsComponent();
 
   void Update(Entity &entity);
 
