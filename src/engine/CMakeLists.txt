@@ -1,5 +1,6 @@
 set(blasted_city_engine_SRCS
-  Shader.cc
+    ResourceManager.cpp
+    Shader.cc
   Sprite.cc
   Texture.cc
   Window.cc

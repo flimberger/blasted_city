@@ -26,7 +26,7 @@ class ShaderObject
   ShaderObject(ShaderObject &&) = default;
   ~ShaderObject();
 
-  static ShaderObject Compile(ShaderType type, const char *shader_source);
+  static ShaderObject Compile(ShaderType type, const std::string &shader_source);
 
   GLuint handle() const;
 
@@ -51,7 +51,7 @@ GetOpenGlInfolog(GLuint handle, PFNGLGETSHADERIVPROC gl_getIv,
 
   gl_getIv(handle, GL_INFO_LOG_LENGTH, &log_length);
 
-  auto infolog = StdLibAllocate<char>(static_cast<std::size_t>(log_length));
+  auto infolog = StdLibAllocate<char>(static_cast<size_t>(log_length));
 
   gl_getInfolog(handle, log_length, NULL, infolog.get());
 
@@ -70,7 +70,7 @@ ShaderObject::~ShaderObject()
   }
 }
 
-ShaderObject ShaderObject::Compile(ShaderType type, const char *shader_source)
+ShaderObject ShaderObject::Compile(ShaderType type, const std::string &shaderSource)
 {
   auto shader = ShaderObject(type);
 
@@ -78,7 +78,10 @@ ShaderObject ShaderObject::Compile(ShaderType type, const char *shader_source)
   if (!shader.handle_) {
     Terminate("Graphics Error: Failed to create shader handle.");
   }
-  glShaderSource(shader.handle_, 1, &shader_source, nullptr);
+
+  const auto *p = shaderSource.c_str();
+
+  glShaderSource(shader.handle_, 1, &p, nullptr);
   glCompileShader(shader.handle_);
 
   GLint status;
@@ -113,15 +116,12 @@ Shader::~Shader()
   }
 }
 
-std::unique_ptr<Shader> Shader::Create(const char *vertex_shader_source,
-                                       const char *fragment_shader_source,
-                                       const char *geometry_shader_source)
+std::unique_ptr<Shader> Shader::Create(const std::string &vertexShaderSource,
+                                       const std::string &fragmentShaderSource,
+                                       const std::string &geometryShaderSource)
 {
-  assert(vertex_shader_source);
-  assert(fragment_shader_source);
-
-  auto vertex_shader    = ShaderObject::Compile(kVertexShader, vertex_shader_source);
-  auto fragment_shader  = ShaderObject::Compile(kFragmentShader, fragment_shader_source);
+  auto vertex_shader    = ShaderObject::Compile(kVertexShader, vertexShaderSource);
+  auto fragment_shader  = ShaderObject::Compile(kFragmentShader, fragmentShaderSource);
   auto shader_program   = std::unique_ptr<Shader>(new Shader);
 
   shader_program->handle_ = glCreateProgram();
@@ -130,8 +130,8 @@ std::unique_ptr<Shader> Shader::Create(const char *vertex_shader_source,
   }
   glAttachShader(shader_program->handle_, vertex_shader.handle());
   glAttachShader(shader_program->handle_, fragment_shader.handle());
-  if (geometry_shader_source) {
-    auto geometry_shader = ShaderObject::Compile(kGeometryShader, geometry_shader_source);
+  if (!geometryShaderSource.empty()) {
+    auto geometry_shader = ShaderObject::Compile(kGeometryShader, geometryShaderSource);
 
     glAttachShader(shader_program->handle_, geometry_shader.handle());
   }

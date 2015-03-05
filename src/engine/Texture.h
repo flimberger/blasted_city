@@ -24,8 +24,8 @@ class Texture
 
   static std::unique_ptr<Texture> CreateFromData(u_int width, u_int height, const u_char *data,
                                                  TextureFormat format);
-  static std::unique_ptr<Texture> CreateFromJPEGFile(const char *path);
-  static std::unique_ptr<Texture> CreateFromPNGFile(const char *path);
+  static std::unique_ptr<Texture> CreateFromJPEGFile(const std::string &path);
+  static std::unique_ptr<Texture> CreateFromPNGFile(const std::string &path);
 
   void Bind() const;
 

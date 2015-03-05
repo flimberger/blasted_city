@@ -9,7 +9,7 @@
 
 namespace blasted_city {
 
-void Terminate [[noreturn]] (const char *message);
+void Terminate [[noreturn]] (const std::string &message);
 
 template<typename T>
 class StdLibDeleter {
@@ -40,7 +40,7 @@ StdUniquePtr<T> StdLibAllocate(std::size_t count) noexcept
   return pointer;
 }
 
-std::string ReadTextFile(const char *filename);
+std::string ReadTextFile(const std::string &filename);
 
 } // namespace blasted_city
 

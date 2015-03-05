@@ -11,30 +11,23 @@
 
 namespace blasted_city {
 
-void Terminate [[noreturn]] (const char *message)
+void Terminate [[noreturn]] (const std::string &message)
 {
-  std::fprintf(stderr, "%s\n", message);
+    std::fprintf(stderr, "%s\n", message.c_str());
   std::fflush(stderr);
   Window::instance()->Shutdown();
   std::exit(1);
 }
 
-std::string ReadTextFile(const char *filename)
+std::string ReadTextFile(const std::string &filename)
 {
   struct stat stat_buffer;
 
-  if (stat(filename, &stat_buffer) < 0) {
-    auto error_msg = std::string("Failed to stat file ");
-
-    error_msg += filename;
-    Terminate(error_msg.c_str());
+  if (stat(filename.c_str(), &stat_buffer) < 0) {
+    Terminate("Failed to stat file " + filename);
   }
   if (stat_buffer.st_size <= 0) {
-    auto errorMsg = std::string("Size of file ");
-
-    errorMsg += filename;
-    errorMsg += " is invalid";
-    Terminate(errorMsg.c_str());
+    Terminate("Size of file " + filename + " is invalid");
   }
 
   std::size_t data_remaining = static_cast<size_t>(stat_buffer.st_size);
@@ -44,13 +37,10 @@ std::string ReadTextFile(const char *filename)
     Terminate("Out of memory");
   }
 
-  int fd = open(filename, O_RDONLY);
+  int fd = open(filename.c_str(), O_RDONLY);
 
   if (fd == -1) {
-    auto error_msg = std::string("Failed to open file ");
-
-    error_msg += filename;
-    Terminate(error_msg.c_str());
+    Terminate("Failed to open file " + filename);
   }
 
   ssize_t size_read;
@@ -58,10 +48,7 @@ std::string ReadTextFile(const char *filename)
 
   while (data_remaining > 0) {
     if ((size_read = read(fd, buffer_position, data_remaining)) == -1) {
-      auto error_msg = std::string("Failed to read from file %s");
-
-      error_msg += filename;
-      Terminate(error_msg.c_str());
+      Terminate("Failed to read from file" + filename);
     }
     data_remaining -= static_cast<size_t>(size_read);
     buffer_position += size_read;

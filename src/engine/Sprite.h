@@ -22,7 +22,6 @@ class Sprite
   ~Sprite();
 
   void Draw(const glm::vec2 &position, const glm::vec2 &size, float rotation) const;
-  void Init();
 
  private:
   ShaderPtr   shader_;

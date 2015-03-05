@@ -49,7 +49,7 @@ std::unique_ptr<Texture> Texture::CreateFromData(u_int width, u_int height, cons
   return texture;
 }
 
-std::unique_ptr<Texture> Texture::CreateFromJPEGFile(const char *path)
+std::unique_ptr<Texture> Texture::CreateFromJPEGFile(const std::string &path)
 {
   struct jpeg_decompress_struct compression_info;
   struct jpeg_error_mgr error_manager;
@@ -57,13 +57,10 @@ std::unique_ptr<Texture> Texture::CreateFromJPEGFile(const char *path)
   compression_info.err = jpeg_std_error(&error_manager);
   jpeg_create_decompress(&compression_info);
 
-  FILE *fp = std::fopen(path, "r");
+  FILE *fp = std::fopen(path.c_str(), "r");
 
   if (!fp) {
-    auto error_message = std::string("Failed to open file ");
-
-    error_message += std::string(path);
-    Terminate(error_message.c_str());
+    Terminate("Failed to open file " + path);
   }
   jpeg_stdio_src(&compression_info, fp);
   jpeg_read_header(&compression_info, true);
@@ -86,15 +83,12 @@ std::unique_ptr<Texture> Texture::CreateFromJPEGFile(const char *path)
   return CreateFromData(width, height, data.get(), kU8rgb);
 }
 
-std::unique_ptr<Texture> Texture::CreateFromPNGFile(const char *path)
+std::unique_ptr<Texture> Texture::CreateFromPNGFile(const std::string &path)
 {
-  FILE *fp = std::fopen(path, "r");
+  FILE *fp = std::fopen(path.c_str(), "r");
 
   if (!fp) {
-    auto error_message = std::string("Failed to open file ");
-
-    error_message += std::string(path);
-    Terminate(error_message.c_str());
+    Terminate("Failed to open file " + path);
   }
 
   png_struct *png_pointer = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr,
@@ -115,11 +109,7 @@ std::unique_ptr<Texture> Texture::CreateFromPNGFile(const char *path)
   if (setjmp(png_jmpbuf(png_pointer))) {
     png_destroy_read_struct(&png_pointer, &infoPointer, NULL);
     std::fclose(fp);
-
-    auto error_message = std::string("Error while reading from file ");
-
-    error_message += std::string(path);
-    Terminate(error_message.c_str());
+    Terminate("Error while reading from file " + path);
   }
   png_init_io(png_pointer, fp);
   png_read_info(png_pointer, infoPointer);
@@ -140,11 +130,7 @@ std::unique_ptr<Texture> Texture::CreateFromPNGFile(const char *path)
   if (setjmp(png_jmpbuf(png_pointer))) {
     png_destroy_read_struct(&png_pointer, &infoPointer, NULL);
     std::fclose(fp);
-
-    auto errorMessage = std::string("Error while reading from file ");
-
-    errorMessage += std::string(path);
-    Terminate(errorMessage.c_str());
+    Terminate("Error while reading from file " + path);
   }
   png_read_image(png_pointer, row_pointers.get());
   png_destroy_read_struct(&png_pointer, &infoPointer, NULL);

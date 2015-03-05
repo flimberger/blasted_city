@@ -18,9 +18,9 @@ class Shader
   Shader(Shader &&other);
   ~Shader();
 
-  static std::unique_ptr<Shader> Create(const char *vertex_shader_source,
-                                        const char *fragment_shader_source,
-                                        const char *geometry_shader_source);
+  static std::unique_ptr<Shader> Create(const std::string &vertexShaderSource,
+                                        const std::string &fragmentShaderSource,
+                                        const std::string &geometryShaderSource);
 
   void SetInteger1(const char *name, GLint value) const;
   void SetMatrix4f(const char *name, const glm::mat4 &value) const;

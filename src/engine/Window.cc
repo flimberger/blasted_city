@@ -117,10 +117,8 @@ void Window::Init()
   GLenum err = glewInit();
 
   if (err != GLEW_OK) {
-    std::string error_message("Graphics Error: Failed to initialize GLEW:");
-
-    error_message += std::string(reinterpret_cast<const char *>(glewGetErrorString(err)));
-    Terminate(error_message.c_str());
+    Terminate("Graphics Error: Failed to initialize GLEW:"
+              + std::string(reinterpret_cast<const char *>(glewGetErrorString(err))));
   }
   glViewport(0, 0, kWindowWidth, kWindowHeight);
   glfwSetKeyCallback(window_, KeyCallback);

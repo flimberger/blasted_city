@@ -4,6 +4,7 @@
 #include "components/PhysicsImplementation.h"
 #include "components/SpriteGraphicsImplementation.h"
 
+#include "engine/ResourceManager.h"
 #include "engine/Shader.h"
 #include "engine/Sprite.h"
 #include "engine/Texture.h"
@@ -20,34 +21,26 @@
 
 using namespace blasted_city;
 
-static constexpr auto kMSperFrame = double(1000.0/60.0);
+static constexpr auto PROTO_SOLDIER_TEXTURE       = "protoSoldier";
+static constexpr auto PROTO_SOLDIER_BITMAP_FILE   = "/home/flo/devel/blasted_city/assets/sprites/proto_soldier.png";
+static constexpr auto SPRITE_FRAGMENT_SHADER_FILE = "/home/flo/devel/blasted_city/src/shaders/sprite.fragment.glsl";
+static constexpr auto SPRITE_VERTEX_SHADER_FILE   = "/home/flo/devel/blasted_city/src/shaders/sprite.vertex.glsl";
+static constexpr auto SPRITE_SHADER               = "spriteShader";
+static constexpr auto MS_PER_FRAME                = 1000.0 / 60.0;
+
+static std::unique_ptr<Entity> CreatePlayer(const World *world);
 
 int main() {
-  auto window  = Window::instance();
-  auto world   = std::unique_ptr<World>(new World(MapPtr(new Map)));
+    auto *window  = Window::instance();
+    auto *resMgr = ResourceManager::GetInstance();
 
-  {
-    auto vertex_shader   = ReadTextFile(
-                "/home/flo/devel/blasted_city/src/shaders/sprite.vertex.glsl");
-    auto fragment_shader = ReadTextFile(
-                "/home/flo/devel/blasted_city/src/shaders/sprite.fragment.glsl");
-    auto sprite_shader   = std::shared_ptr<Shader>(Shader::Create(vertex_shader.c_str(),
-                                                                  fragment_shader.c_str(),
-                                                                  nullptr));
-    auto texture         = std::shared_ptr<Texture>(Texture::CreateFromPNGFile(
-                                  "/home/flo/devel/blasted_city/assets/sprites/proto_soldier.png"));
-    auto sprite          = std::make_shared<Sprite>(sprite_shader, texture);
+    resMgr->CreateShader(SPRITE_SHADER, SPRITE_VERTEX_SHADER_FILE, SPRITE_FRAGMENT_SHADER_FILE,
+                         std::string());
+    resMgr->CreateTexture(PROTO_SOLDIER_TEXTURE, PROTO_SOLDIER_BITMAP_FILE);
 
-    sprite->Init();
+  auto  world   = std::unique_ptr<World>(new World(MapPtr(new Map)));
 
-    auto graphics = std::unique_ptr<IGraphicsComponent>(new SpriteGraphicsImplementation(sprite));
-    auto input    = std::unique_ptr<IControlComponent>(new LocalInputImplementation);
-    auto physics  = std::unique_ptr<IPhysicsComponent>(new PhysicsImplementation(world->GetMap()));
-    auto player   = std::unique_ptr<Entity>(new Burner(std::move(graphics), std::move(input),
-                                                       std::move(physics), 10));
-
-    world->AddEntity(std::move(player));
-  }
+  world->AddEntity(CreatePlayer(world.get()));
 
   auto start      = 0.0;
   auto sleep_time = 0.0;
@@ -60,7 +53,7 @@ int main() {
     window->BeginFrame();
     world->Draw();
     window->EndFrame();
-    sleep_time = start + kMSperFrame - glfwGetTime();
+    sleep_time = start + MS_PER_FRAME - glfwGetTime();
     if (sleep_time > 0.0) {
       usleep(static_cast<useconds_t>(sleep_time));
     } else {
@@ -70,4 +63,17 @@ int main() {
 
   window->Shutdown();
   return 0;
+}
+
+static std::unique_ptr<Entity> CreatePlayer(const World *world)
+{
+    auto *resMgr   = ResourceManager::GetInstance();
+    auto  sprite   = std::make_shared<Sprite>(resMgr->GetShader(SPRITE_SHADER),
+                                              resMgr->GetTexture(PROTO_SOLDIER_TEXTURE));
+    auto  graphics = std::unique_ptr<IGraphicsComponent>(new SpriteGraphicsImplementation(sprite));
+    auto  input    = std::unique_ptr<IControlComponent>(new LocalInputImplementation);
+    auto  physics  = std::unique_ptr<IPhysicsComponent>(new PhysicsImplementation(world->GetMap()));
+
+    return std::unique_ptr<Entity>(new Burner(std::move(graphics), std::move(input),
+                                              std::move(physics), 10));
 }
