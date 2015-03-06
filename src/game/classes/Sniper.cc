@@ -4,8 +4,10 @@
 
 namespace blasted_city {
 
-Sniper::Sniper(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, uint16_t hitpoints)
-  : Soldier(std::move(graphics), std::move(input), std::move(physics), hitpoints)
+Sniper::Sniper(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
+               uint16_t hitpoints)
+  : Soldier(std::move(graphics), std::move(input), std::move(physics), std::move(initialPose),
+            hitpoints)
 {}
 
 Sniper::~Sniper() = default;

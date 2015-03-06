@@ -32,7 +32,7 @@ class Entity
   void set_speed(Vec2 speed);
 
  protected:
-  Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec2 size);
+  Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 pose, Vec2 size);
 
   virtual void UpdateImpl();
 

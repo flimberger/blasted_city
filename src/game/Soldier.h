@@ -41,7 +41,8 @@ class Soldier : public Entity
   bool TakeItem(const ItemPtr &item);
 
  protected:
-  explicit Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, uint16_t hitpoints);
+  explicit Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
+                   uint16_t hitpoints);
 
   virtual void UpdateImpl() override;
 

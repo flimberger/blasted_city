@@ -10,8 +10,9 @@ class Gunner : public Soldier
  public:
   virtual ~Gunner();
 
+    Gunner(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
+           uint16_t hitpoints);
  protected:
-  Gunner(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, uint16_t hitpoints);
 
  private:
   virtual void AttackImpl() override;

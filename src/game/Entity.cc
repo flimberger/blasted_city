@@ -4,8 +4,9 @@
 
 namespace blasted_city {
 
-Entity::Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec2 size)
-  : size_(std::move(size)),
+Entity::Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 pose, Vec2 size)
+  : pose_(std::move(pose)),
+    size_(std::move(size)),
     graphics_(std::move(graphics)),
     input_(std::move(input)),
     physics_(std::move(physics))
