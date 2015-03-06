@@ -14,10 +14,10 @@ class Window
   Window(const Window &) = delete;
   ~Window();
 
-  static Window  *instance();
+    static Window &GetInstance();
 
-  std::size_t  height() const;
-  std::size_t  width() const;
+    size_t  GetHeight() const;
+    size_t  GetWidth() const;
   bool         is_open() const;
   bool        *key_states() const;
 

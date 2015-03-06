@@ -148,9 +148,9 @@ std::unique_ptr<Shader> Shader::Create(const std::string &vertexShaderSource,
   }
 
   shader_program->Use();
-  auto *win = Window::instance();
-  auto projection = glm::ortho(0.0f, static_cast<GLfloat>(win->width()),
-                               static_cast<GLfloat>(win->height()), 0.0f, -1.0f, 1.0f);
+    auto &win = Window::GetInstance();
+    auto  projection = glm::ortho(0.0f, static_cast<GLfloat>(win.GetWidth()),
+                                  static_cast<GLfloat>(win.GetHeight()), 0.0f, -1.0f, 1.0f);
 
   shader_program->SetMatrix4f("projection", projection);
   glUseProgram(0);

@@ -24,7 +24,7 @@ public:
                                          const std::string &geometryShaderSourceFile);
     void                    CreateTexture(const std::string &id,
                                           const std::string &imageFile);
-    static ResourceManager *GetInstance();
+    static ResourceManager &GetInstance();
     ShaderPtr               GetShader(const std::string &id) const;
     TexturePtr              GetTexture(const std::string &id) const;
 

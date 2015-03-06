@@ -5,8 +5,8 @@
 namespace blasted_city {
 
 Map::Map()
-  : height_(Window::instance()->height()),
-    width_(Window::instance()->width())
+  : height_(Window::GetInstance().GetHeight()),
+    width_(Window::GetInstance().GetWidth())
 {}
 
 Map::~Map() = default;

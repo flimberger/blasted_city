@@ -14,9 +14,8 @@ namespace blasted_city {
 void Terminate [[noreturn]] (const std::string &message)
 {
     std::fprintf(stderr, "%s\n", message.c_str());
-  std::fflush(stderr);
-  Window::instance()->Shutdown();
-  std::exit(1);
+    std::fflush(stderr);
+    std::exit(1);
 }
 
 std::string ReadTextFile(const std::string &filename)

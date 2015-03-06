@@ -5,8 +5,6 @@
 
 namespace blasted_city {
 
-static ResourceManager *g_instance = nullptr;
-
 ResourceManager::ResourceManager() = default;
 
 ResourceManager::~ResourceManager()
@@ -43,13 +41,11 @@ void ResourceManager::CreateTexture(const std::string &id,
     }
 }
 
-ResourceManager *ResourceManager::GetInstance()
+ResourceManager &ResourceManager::GetInstance()
 {
-    if (!g_instance) {
-        g_instance = new ResourceManager;
-    }
+    static ResourceManager s_instance;
 
-    return g_instance;
+    return s_instance;
 }
 
 ShaderPtr ResourceManager::GetShader(const std::string &id) const

@@ -9,7 +9,6 @@ static constexpr int    kWindowWidth   = 800;
 static constexpr int    kWindowHeight  = 600;
 static const     char  *kWindowTitle   ="Blasted City";
 
-static Window *g_window_instance;
 static bool    g_key_press_table[kNumberOfKeys];
 
 void KeyCallback(GLFWwindow *window, int key, int scan_code, int action, int mode)
@@ -34,39 +33,64 @@ void MouseCallback(GLFWwindow *window, double x_position, double y_position)
 
 Window::Window()
   : window_(nullptr)
-{}
+{
+    if (!glfwInit()) {
+        Terminate("Graphics Error: Failed to initialize GLFW");
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    window_ = glfwCreateWindow(kWindowWidth, kWindowHeight, kWindowTitle, NULL, NULL);
+    if (!window_) {
+        Terminate("Graphics Error: Failed to create GLFW window");
+    }
+    glfwMakeContextCurrent(window_);
+    glewExperimental = GL_TRUE;
+
+    GLenum err = glewInit();
+
+    if (err != GLEW_OK) {
+        Terminate("Graphics Error: Failed to initialize GLEW:"
+                  + std::string(reinterpret_cast<const char *>(glewGetErrorString(err))));
+    }
+    glViewport(0, 0, kWindowWidth, kWindowHeight);
+    glfwSetKeyCallback(window_, KeyCallback);
+    glfwSetCursorPosCallback(window_, MouseCallback);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.1f, 0.05f, 0.025f, 1.0f);
+}
 
 Window::~Window()
 {
   Shutdown();
 }
 
-Window *Window::instance()
+Window &Window::GetInstance()
 {
-  if (!g_window_instance) {
-    g_window_instance = new Window;
-    g_window_instance->Init();
-  }
+  static Window s_instance;
 
-  return g_window_instance;
+  return s_instance;
 }
 
-std::size_t Window::height() const
+size_t Window::GetHeight() const
 {
-  int height;
+    int height;
 
-  glfwGetWindowSize(window_, NULL, &height);
+    glfwGetWindowSize(window_, NULL, &height);
 
-  return static_cast<std::size_t>(height);
+    return static_cast<size_t>(height);
 }
 
-std::size_t Window::width() const
+size_t Window::GetWidth() const
 {
-  int width;
+    int width;
 
-  glfwGetWindowSize(window_, &width, NULL);
+    glfwGetWindowSize(window_, &width, NULL);
 
-  return static_cast<std::size_t>(width);
+    return static_cast<size_t>(width);
 }
 
 bool Window::is_open() const
@@ -96,37 +120,6 @@ void Window::Shutdown()
     glfwTerminate();
     window_ = nullptr;
   }
-}
-
-void Window::Init()
-{
-  if (!glfwInit()) {
-    Terminate("Graphics Error: Failed to initialize GLFW");
-  }
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-  window_ = glfwCreateWindow(kWindowWidth, kWindowHeight, kWindowTitle, NULL, NULL);
-  if (!window_) {
-    Terminate("Graphics Error: Failed to create GLFW window");
-  }
-  glfwMakeContextCurrent(window_);
-  glewExperimental = GL_TRUE;
-
-  GLenum err = glewInit();
-
-  if (err != GLEW_OK) {
-    Terminate("Graphics Error: Failed to initialize GLEW:"
-              + std::string(reinterpret_cast<const char *>(glewGetErrorString(err))));
-  }
-  glViewport(0, 0, kWindowWidth, kWindowHeight);
-  glfwSetKeyCallback(window_, KeyCallback);
-  glfwSetCursorPosCallback(window_, MouseCallback);
-  glEnable(GL_CULL_FACE);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glClearColor(0.1f, 0.05f, 0.025f, 1.0f);
 }
 
 } // namespace blasted_city

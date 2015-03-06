@@ -31,12 +31,12 @@ static constexpr auto MS_PER_FRAME                = 1000.0 / 60.0;
 static std::unique_ptr<Entity> CreatePlayer(const World *world);
 
 int main() {
-    auto *window  = Window::instance();
-    auto *resMgr = ResourceManager::GetInstance();
+    auto &window = Window::GetInstance();
+    auto &resMgr = ResourceManager::GetInstance();
 
-    resMgr->CreateShader(SPRITE_SHADER, SPRITE_VERTEX_SHADER_FILE, SPRITE_FRAGMENT_SHADER_FILE,
+    resMgr.CreateShader(SPRITE_SHADER, SPRITE_VERTEX_SHADER_FILE, SPRITE_FRAGMENT_SHADER_FILE,
                          std::string());
-    resMgr->CreateTexture(PROTO_SOLDIER_TEXTURE, PROTO_SOLDIER_BITMAP_FILE);
+    resMgr.CreateTexture(PROTO_SOLDIER_TEXTURE, PROTO_SOLDIER_BITMAP_FILE);
 
   auto  world   = std::unique_ptr<World>(new World(MapPtr(new Map)));
 
@@ -46,13 +46,13 @@ int main() {
   auto sleep_time = 0.0;
 
   while (true) {
-    if (!window->is_open()) {
+    if (!window.is_open()) {
       break;
     }
     start = glfwGetTime();
-    window->BeginFrame();
+    window.BeginFrame();
     world->Draw();
-    window->EndFrame();
+    window.EndFrame();
     sleep_time = start + MS_PER_FRAME - glfwGetTime();
     if (sleep_time > 0.0) {
       usleep(static_cast<useconds_t>(sleep_time));
@@ -61,15 +61,14 @@ int main() {
     }
   }
 
-  window->Shutdown();
   return 0;
 }
 
 static std::unique_ptr<Entity> CreatePlayer(const World *world)
 {
-    auto *resMgr   = ResourceManager::GetInstance();
-    auto  sprite   = std::make_shared<Sprite>(resMgr->GetShader(SPRITE_SHADER),
-                                              resMgr->GetTexture(PROTO_SOLDIER_TEXTURE));
+    auto &resMgr   = ResourceManager::GetInstance();
+    auto  sprite   = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
+                                              resMgr.GetTexture(PROTO_SOLDIER_TEXTURE));
     auto  graphics = std::unique_ptr<IGraphicsComponent>(new SpriteGraphicsImplementation(sprite));
     auto  input    = std::unique_ptr<IControlComponent>(new LocalInputImplementation);
     auto  physics  = std::unique_ptr<IPhysicsComponent>(new PhysicsImplementation(world->GetMap()));

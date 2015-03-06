@@ -43,7 +43,7 @@ LocalInputImplementation::~LocalInputImplementation() = default;
 
 void LocalInputImplementation::UpdateImpl(Entity &entity)
 {
-  auto       *keys  = Window::instance()->key_states();
+  auto       *keys  = Window::GetInstance().key_states();
   auto        pose  = entity.pose();
   const auto &speed = entity.speed();
 
