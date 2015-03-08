@@ -64,23 +64,37 @@ int main() {
     world->AddEntity(CreateOpponent(Vec3(window.GetWidth() * 0.75f, window.GetHeight() * 0.75f,
                                          kPi2 * -1.0f)));
 
-    auto start      = 0.0;
-    auto sleep_time = 0.0;
+    auto endTime       = 0.0; // s
+    auto frameTime     = 0.0; // ms
+    auto frameTimeSum  = 0.0; // ms
+    auto intervalStart = glfwGetTime(); // s
+    auto nFrames       = 0u;
+    auto sleepTime     = useconds_t(0); // us
+    auto startTime     = 0.0; // s
 
     while (true) {
         if (!window.is_open()) {
             break;
         }
-        start = glfwGetTime();
+        startTime = glfwGetTime();
         window.BeginFrame();
         world->Update();
         world->Draw();
         window.EndFrame();
-        sleep_time = start + MS_PER_FRAME - glfwGetTime();
-        if (sleep_time > 0.0) {
-            usleep(static_cast<useconds_t>(sleep_time));
-        } else {
-            std::fprintf(stderr, "lag of %lf ms\n", sleep_time * -1.0);
+        endTime = glfwGetTime();
+        frameTime = (endTime - startTime) * 1000.0;
+        frameTimeSum += frameTime;
+        ++nFrames;
+        if (endTime - intervalStart > 1.0) {
+            std::fprintf(stdout, "average frame time %lf ms (%u FPS)\n", frameTimeSum / nFrames,
+                         nFrames);
+            frameTimeSum = 0.0;
+            nFrames = 0u;
+            intervalStart = endTime;
+        }
+        sleepTime = static_cast<useconds_t>((MS_PER_FRAME - frameTime) * 1000.0);
+        if (sleepTime > 0.0) {
+            usleep(sleepTime);
         }
     }
 
