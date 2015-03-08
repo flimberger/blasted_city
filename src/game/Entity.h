@@ -11,42 +11,46 @@
 
 namespace blasted_city {
 
-using GraphicsPtr = std::unique_ptr<IGraphicsComponent>;
-using InputPtr    = std::unique_ptr<IControlComponent>;
-using PhysicsPtr  = std::unique_ptr<IPhysicsComponent>;
+using GraphicsPtr = std::shared_ptr<IGraphicsComponent>;
+using ControlPtr  = std::shared_ptr<IControlComponent>;
+using PhysicsPtr  = std::shared_ptr<IPhysicsComponent>;
 
 class World;
 
 class Entity
 {
- public:
-  Entity() = delete;
-  virtual ~Entity();
+public:
+    Entity() = delete;
+    virtual ~Entity();
 
-  void Draw() const;
-  void Update(World &world);
+    void Draw() const;
+    void Update(World &world);
 
-  const Vec3 &pose() const;
-  const Vec2 &size() const;
-  const Vec2 &speed() const;
+    const Vec3 &GetPose() const;
+    const Vec2 &GetSize() const;
+    const Vec2 &GetSpeed() const;
 
-  void set_pose(Vec3 pose);
-  void set_size(Vec2 size);
-  void set_speed(Vec2 speed);
+    const ControlPtr  &GetControlComponent() const;
+    const GraphicsPtr &GetGraphicsComponent() const;
+    const PhysicsPtr  &GetPhysicsComponent() const;
 
- protected:
-  Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 pose, Vec2 size);
+    void SetPose(Vec3 GetPose);
+    void SetSize(Vec2 GetSize);
+    void SetSpeed(Vec2 GetSpeed);
 
-  virtual void UpdateImpl(World &world);
+protected:
+    Entity(GraphicsPtr graphics, ControlPtr control, PhysicsPtr physics, Vec3 GetPose, Vec2 GetSize);
 
- private:
-  Vec3 pose_; // xy := position, z := rotation
-  Vec2 size_;
-  Vec2 speed_; // x := linear, y := rotational
+    virtual void UpdateImpl(World &world);
 
-  GraphicsPtr  graphics_;
-  InputPtr     input_;
-  PhysicsPtr   physics_;
+private:
+    Vec3         m_pose; // xy := position, z := rotation
+    Vec2         m_size;
+    Vec2         m_speed; // x := linear, y := rotational
+
+    ControlPtr   m_control;
+    GraphicsPtr  m_graphics;
+    PhysicsPtr   m_physics;
 };
 
 } // namespace blasted_city

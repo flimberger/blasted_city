@@ -4,19 +4,19 @@
 
 namespace blasted_city {
 
-Entity::Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 pose, Vec2 size)
-  : pose_(std::move(pose)),
-    size_(std::move(size)),
-    graphics_(std::move(graphics)),
-    input_(std::move(input)),
-    physics_(std::move(physics))
+Entity::Entity(GraphicsPtr graphics, ControlPtr control, PhysicsPtr physics, Vec3 pose, Vec2 size)
+  : m_pose(std::move(pose)),
+    m_size(std::move(size)),
+    m_control(std::move(control)),
+    m_graphics(std::move(graphics)),
+    m_physics(std::move(physics))
 {}
 
 Entity::~Entity() = default;
 
 void Entity::Draw() const
 {
-    graphics_->Draw(*this);
+    m_graphics->Draw(*this);
 }
 
 void Entity::Update(World &world)
@@ -24,42 +24,57 @@ void Entity::Update(World &world)
   UpdateImpl(world);
 }
 
-const Vec3 &Entity::pose() const
+const Vec3 &Entity::GetPose() const
 {
-  return pose_;
+  return m_pose;
 }
 
-const Vec2 &Entity::size() const
+const Vec2 &Entity::GetSize() const
 {
-  return size_;
+  return m_size;
 }
 
-const Vec2 &Entity::speed() const
+const Vec2 &Entity::GetSpeed() const
 {
-  return speed_;
+  return m_speed;
 }
 
-void Entity::set_pose(Vec3 pose)
+const ControlPtr &Entity::GetControlComponent() const
 {
-  pose_ = std::move(pose);
+    return m_control;
 }
 
-void Entity::set_size(Vec2 size)
+const GraphicsPtr &Entity::GetGraphicsComponent() const
 {
-  size_ = std::move(size);
+    return m_graphics;
 }
 
-void Entity::set_speed(Vec2 speed)
+const PhysicsPtr &Entity::GetPhysicsComponent() const
 {
-  speed_ = std::move(speed);
+    return m_physics;
+}
+
+void Entity::SetPose(Vec3 pose)
+{
+  m_pose = std::move(pose);
+}
+
+void Entity::SetSize(Vec2 size)
+{
+  m_size = std::move(size);
+}
+
+void Entity::SetSpeed(Vec2 speed)
+{
+  m_speed = std::move(speed);
 }
 
 void Entity::UpdateImpl(World &world)
 {
-  input_->Update(world, *this);
-  physics_->Update(world, *this);
+  m_control->Update(world, *this);
+  m_physics->Update(world, *this);
 
-  std::fprintf(stderr, "Entity::UpdateImpl: new Pose: (%f, %f, %f)\n", pose_.x, pose_.y, pose_.z);
+  std::fprintf(stderr, "Entity::UpdateImpl: new Pose: (%f, %f, %f)\n", m_pose.x, m_pose.y, m_pose.z);
 }
 
 } // namespace blasted_city

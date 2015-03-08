@@ -38,7 +38,7 @@ Rank GetNextRank(Rank rank)
   return next;
 }
 
-Soldier::Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
+Soldier::Soldier(GraphicsPtr graphics, ControlPtr input, PhysicsPtr physics, Vec3 initialPose,
                  uint16_t hitpoints)
   : Entity(std::move(graphics), std::move(input), std::move(physics), std::move(initialPose),
            Vec2(kSoldierSize, kSoldierSize)),
@@ -46,7 +46,7 @@ Soldier::Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 
     kill_count_(0),
     rank_(kRecruit)
 {
-  set_speed(Vec2(2.0, 0.05));
+  SetSpeed(Vec2(2.0, 0.05));
 }
 
 Soldier::~Soldier() = default;

@@ -16,8 +16,8 @@ void PhysicsImplementation::UpdateImpl(World &world, Entity &entity)
 {
     (void) world;
 
-  auto        pose = entity.pose();
-  const auto &size = entity.size();
+  auto        pose = entity.GetPose();
+  const auto &size = entity.GetSize();
 
   if (pose.x < 0.0f) {
     pose.x = 0.0f;
@@ -31,7 +31,7 @@ void PhysicsImplementation::UpdateImpl(World &world, Entity &entity)
   if (pose.y > m_map->height() - size.y) {
     pose.y = m_map->height() - size.y;
   }
-  entity.set_pose(pose);
+  entity.SetPose(pose);
 }
 
 } // namespace blasted_city

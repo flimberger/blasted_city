@@ -11,7 +11,7 @@ class Sniper : public Soldier
   virtual ~Sniper();
 
  protected:
-  explicit Sniper(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose, uint16_t hitpoints);
+  explicit Sniper(GraphicsPtr graphics, ControlPtr input, PhysicsPtr physics, Vec3 initialPose, uint16_t hitpoints);
 
  private:
   virtual void SpecialActionImpl(World &world) override;

@@ -44,8 +44,8 @@ LocalInputImplementation::~LocalInputImplementation() = default;
 void LocalInputImplementation::UpdateImpl(World &world, Entity &entity)
 {
   auto       *keys  = Window::GetInstance().key_states();
-  auto        pose  = entity.pose();
-  const auto &speed = entity.speed();
+  auto        pose  = entity.GetPose();
+  const auto &speed = entity.GetSpeed();
 
   if (keys[g_key_map_table[kMoveForward]]) {
     pose.x += speed.x * std::cos(pose.z);
@@ -69,7 +69,7 @@ void LocalInputImplementation::UpdateImpl(World &world, Entity &entity)
   if (keys[g_key_map_table[kTurnRight]]) {
     pose.z += speed.y;
   }
-  entity.set_pose(pose);
+  entity.SetPose(pose);
   if (keys[g_key_map_table[kAttack]]) {
     static_cast<Soldier &>(entity).Attack(world);
   }

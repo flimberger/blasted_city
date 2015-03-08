@@ -1,6 +1,7 @@
 #include "global.h"
 #include "math.h"
 
+#include "components/ComponentManager.h"
 #include "components/InactiveControl.h"
 #include "components/LocalInputImplementation.h"
 #include "components/PhysicsImplementation.h"
@@ -24,15 +25,15 @@
 
 using namespace blasted_city;
 
-static constexpr auto PROTO_SOLDIER_TEXTURE       = "protoSoldier";
+static constexpr auto kProtoSoldierName           = "protoSoldier";
 static constexpr auto PROTO_SOLDIER_BITMAP_FILE   = "/home/flo/devel/blasted_city/assets/sprites/proto_soldier.png";
 static constexpr auto SPRITE_FRAGMENT_SHADER_FILE = "/home/flo/devel/blasted_city/src/shaders/sprite.fragment.glsl";
 static constexpr auto SPRITE_VERTEX_SHADER_FILE   = "/home/flo/devel/blasted_city/src/shaders/sprite.vertex.glsl";
 static constexpr auto SPRITE_SHADER               = "spriteShader";
 static constexpr auto MS_PER_FRAME                = 1000.0 / 60.0;
 
-static std::unique_ptr<Entity> CreateOpponent(const World &world, const Vec3 &initialPose);
-static std::unique_ptr<Entity> CreatePlayer(const World &world, const Vec3 &initialPose);
+static std::unique_ptr<Entity> CreateOpponent(const Vec3 &initialPose);
+static std::unique_ptr<Entity> CreatePlayer(const Vec3 &initialPose);
 
 int main() {
     auto &window = Window::GetInstance();
@@ -40,16 +41,28 @@ int main() {
 
     resMgr.CreateShader(SPRITE_SHADER, SPRITE_VERTEX_SHADER_FILE, SPRITE_FRAGMENT_SHADER_FILE,
                          std::string());
-    resMgr.CreateTexture(PROTO_SOLDIER_TEXTURE, PROTO_SOLDIER_BITMAP_FILE);
+    resMgr.CreateTexture(kProtoSoldierName, PROTO_SOLDIER_BITMAP_FILE);
 
-    auto  world   = std::unique_ptr<World>(new World(MapPtr(new Map)));
+    auto  sprite   = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
+                                              resMgr.GetTexture(kProtoSoldierName));
+    auto  world    = std::unique_ptr<World>(new World(MapPtr(new Map)));
+    auto &compMgr  = ComponentManager::GetInstance();
 
-    world->AddEntity(CreatePlayer(*world, Vec3(window.GetWidth() * 0.5f,
-                                               window.GetHeight() * 0.25f, kPi2)));
-    world->AddEntity(CreateOpponent(*world, Vec3(window.GetWidth() * 0.25f,
-                                                 window.GetHeight() * 0.75f, kPi2 * -1.0f)));
-    world->AddEntity(CreateOpponent(*world, Vec3(window.GetWidth() * 0.75f,
-                                                 window.GetHeight() * 0.75f, kPi2 * -1.0f)));
+    compMgr.AddControlComponent(kProtoSoldierName,
+                                std::shared_ptr<IControlComponent>(new InactiveControl));
+    compMgr.AddGraphicsComponent(kProtoSoldierName,
+                                 std::shared_ptr<IGraphicsComponent>(
+                                     new SpriteGraphicsImplementation(sprite)));
+    compMgr.AddPhysicsComponent(kProtoSoldierName,
+                                std::shared_ptr<IPhysicsComponent>(
+                                    new PhysicsImplementation(world->GetMap())));
+
+    world->AddEntity(CreatePlayer(Vec3(window.GetWidth() * 0.5f, window.GetHeight() * 0.25f,
+                                       kPi2)));
+    world->AddEntity(CreateOpponent(Vec3(window.GetWidth() * 0.25f, window.GetHeight() * 0.75f,
+                                         kPi2 * -1.0f)));
+    world->AddEntity(CreateOpponent(Vec3(window.GetWidth() * 0.75f, window.GetHeight() * 0.75f,
+                                         kPi2 * -1.0f)));
 
     auto start      = 0.0;
     auto sleep_time = 0.0;
@@ -74,28 +87,23 @@ int main() {
     return 0;
 }
 
-std::unique_ptr<Entity> CreateOpponent(const World &world, const Vec3 &initialPose)
+std::unique_ptr<Entity> CreateOpponent(const Vec3 &initialPose)
 {
-    auto &resMgr   = ResourceManager::GetInstance();
-    auto  sprite   = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
-                                              resMgr.GetTexture(PROTO_SOLDIER_TEXTURE));
-    auto  graphics = std::unique_ptr<IGraphicsComponent>(new SpriteGraphicsImplementation(sprite));
-    auto  input    = std::unique_ptr<IControlComponent>(new InactiveControl);
-    auto  physics  = std::unique_ptr<IPhysicsComponent>(new PhysicsImplementation(world.GetMap()));
+    auto &compMgr = ComponentManager::GetInstance();
 
-    return std::unique_ptr<Entity>(new Gunner(std::move(graphics), std::move(input),
-                                              std::move(physics), initialPose, 10));
+    return std::unique_ptr<Entity>(new Gunner(compMgr.GetGraphicsComponent(kProtoSoldierName),
+                                              compMgr.GetControlComponent(kProtoSoldierName),
+                                              compMgr.GetPhysicsComponent(kProtoSoldierName),
+                                              initialPose, 10));
 }
 
-static std::unique_ptr<Entity> CreatePlayer(const World &world, const Vec3 &initialPose)
+static std::unique_ptr<Entity> CreatePlayer(const Vec3 &initialPose)
 {
-    auto &resMgr   = ResourceManager::GetInstance();
-    auto  sprite   = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
-                                              resMgr.GetTexture(PROTO_SOLDIER_TEXTURE));
-    auto  graphics = std::unique_ptr<IGraphicsComponent>(new SpriteGraphicsImplementation(sprite));
-    auto  input    = std::unique_ptr<IControlComponent>(new LocalInputImplementation);
-    auto  physics  = std::unique_ptr<IPhysicsComponent>(new PhysicsImplementation(world.GetMap()));
+    auto &compMgr = ComponentManager::GetInstance();
 
-    return std::unique_ptr<Entity>(new Burner(std::move(graphics), std::move(input),
-                                              std::move(physics), initialPose, 10));
+    return std::unique_ptr<Entity>(new Burner(compMgr.GetGraphicsComponent(kProtoSoldierName),
+                                              std::shared_ptr<IControlComponent>(
+                                                  new LocalInputImplementation),
+                                              compMgr.GetPhysicsComponent(kProtoSoldierName),
+                                              initialPose, 10));
 }

@@ -8,7 +8,7 @@ namespace blasted_city {
 class Burner : public Soldier
 {
  public:
-  Burner(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
+  Burner(GraphicsPtr graphics, ControlPtr input, PhysicsPtr physics, Vec3 initialPose,
          uint16_t hitpoints);
   virtual ~Burner();
 

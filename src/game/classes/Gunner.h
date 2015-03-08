@@ -10,7 +10,7 @@ class Gunner : public Soldier
  public:
   virtual ~Gunner();
 
-    Gunner(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
+    Gunner(GraphicsPtr graphics, ControlPtr input, PhysicsPtr physics, Vec3 initialPose,
            uint16_t hitpoints);
  protected:
 

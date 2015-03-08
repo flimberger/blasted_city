@@ -1,4 +1,5 @@
 set(blasted_city_components_SRCS
+    ComponentManager.cpp
   IGraphicsComponent.cpp
   IControlComponent.cpp
     InactiveControl.cpp
