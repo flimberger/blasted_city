@@ -2,7 +2,7 @@
 #define BLASTED_CITY_GAME_WORLD_H_
 
 #include <memory>
-#include <vector>
+#include <list>
 
 namespace blasted_city {
 
@@ -25,8 +25,8 @@ class World
   Map *GetMap() const;
 
  private:
-  std::vector<EntityPtr>  entities_;
-  MapPtr                  m_map;
+  std::list<EntityPtr>  m_entities;
+  MapPtr                m_map;
 };
 
 } // namespace blasted_city

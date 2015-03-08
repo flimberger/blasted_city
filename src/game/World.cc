@@ -13,20 +13,23 @@ World::~World() = default;
 
 void World::AddEntity(EntityPtr entity)
 {
-  entities_.push_back(std::move(entity));
+  m_entities.push_back(std::move(entity));
 }
 
 void World::Draw() const
 {
-    for (auto &entity : entities_) {
+    for (auto &entity : m_entities) {
         entity->Draw();
     }
 }
 
 void World::Update()
 {
-    for (auto &entity : entities_) {
+    for (auto &entity : m_entities) {
         entity->Update(*this);
+        if (entity->ShouldDelete()) {
+            m_entities.remove(entity);
+        }
     }
 }
 

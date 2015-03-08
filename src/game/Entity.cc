@@ -9,7 +9,8 @@ Entity::Entity(GraphicsPtr graphics, ControlPtr control, PhysicsPtr physics, Vec
     m_size(std::move(size)),
     m_control(std::move(control)),
     m_graphics(std::move(graphics)),
-    m_physics(std::move(physics))
+    m_physics(std::move(physics)),
+    m_shouldDelete(false)
 {}
 
 Entity::~Entity() = default;
@@ -54,6 +55,16 @@ const PhysicsPtr &Entity::GetPhysicsComponent() const
     return m_physics;
 }
 
+bool Entity::ShouldDelete() const
+{
+    return m_shouldDelete;
+}
+
+void Entity::Delete()
+{
+    m_shouldDelete = true;
+}
+
 void Entity::SetPose(Vec3 pose)
 {
   m_pose = std::move(pose);
@@ -73,8 +84,6 @@ void Entity::UpdateImpl(World &world)
 {
   m_control->Update(world, *this);
   m_physics->Update(world, *this);
-
-  std::fprintf(stderr, "Entity::UpdateImpl: new Pose: (%f, %f, %f)\n", m_pose.x, m_pose.y, m_pose.z);
 }
 
 } // namespace blasted_city

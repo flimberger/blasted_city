@@ -33,7 +33,9 @@ public:
     const ControlPtr  &GetControlComponent() const;
     const GraphicsPtr &GetGraphicsComponent() const;
     const PhysicsPtr  &GetPhysicsComponent() const;
+    bool ShouldDelete() const;
 
+    void Delete();
     void SetPose(Vec3 GetPose);
     void SetSize(Vec2 GetSize);
     void SetSpeed(Vec2 GetSpeed);
@@ -51,6 +53,8 @@ private:
     ControlPtr   m_control;
     GraphicsPtr  m_graphics;
     PhysicsPtr   m_physics;
+
+    bool         m_shouldDelete;
 };
 
 } // namespace blasted_city
