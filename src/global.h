@@ -10,6 +10,7 @@
 namespace blasted_city {
 
 // temporarily globals
+constexpr auto kBulletName        = "bullet";
 constexpr auto kProtoSoldierName  = "protoSoldier";
 
 void Terminate [[noreturn]] (const std::string &message);

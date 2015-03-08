@@ -1,4 +1,5 @@
 set(blasted_city_game_SRCS
+    Bullet.cpp
   Clothes.cc
   Entity.cc
   Inventory.cc

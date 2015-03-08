@@ -1,6 +1,9 @@
 #include "Soldier.h"
 
+#include "Bullet.h"
 #include "World.h"
+
+#include "../components/ComponentManager.h"
 
 #include "../engine/Sprite.h"
 
@@ -54,6 +57,14 @@ Soldier::~Soldier() = default;
 void Soldier::Attack(World &world)
 {
     (void) world;
+    // m_gun.Shoot(direction);
+
+    auto &compMgr = ComponentManager::GetInstance();
+
+    world.AddEntity(EntityPtr(new Bullet(compMgr.GetGraphicsComponent(kBulletName),
+                                         compMgr.GetControlComponent(kBulletName),
+                                         compMgr.GetPhysicsComponent(kBulletName),
+                                         Entity::GetPose())));
 }
 
 void Soldier::Interact(World &world)

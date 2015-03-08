@@ -3,8 +3,10 @@
 
 #include "components/ComponentManager.h"
 #include "components/InactiveControl.h"
+#include "components/LinearMoveControl.h"
 #include "components/LocalInputImplementation.h"
 #include "components/PhysicsImplementation.h"
+#include "components/ProjectilePhysics.h"
 #include "components/SpriteGraphicsImplementation.h"
 
 #include "engine/ResourceManager.h"
@@ -42,19 +44,28 @@ int main() {
                          std::string());
     resMgr.CreateTexture(kProtoSoldierName, PROTO_SOLDIER_BITMAP_FILE);
 
-    auto  sprite   = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
-                                              resMgr.GetTexture(kProtoSoldierName));
-    auto  world    = std::unique_ptr<World>(new World(MapPtr(new Map)));
-    auto &compMgr  = ComponentManager::GetInstance();
+    auto  soldierSprite = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
+                                                   resMgr.GetTexture(kProtoSoldierName));
+    auto  bulletSprite  = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
+                                                   resMgr.GetTexture(kBlackPixel));
+    auto  world         = std::unique_ptr<World>(new World(MapPtr(new Map)));
+    auto &compMgr       = ComponentManager::GetInstance();
 
     compMgr.AddControlComponent(kProtoSoldierName,
                                 std::shared_ptr<IControlComponent>(new InactiveControl));
     compMgr.AddGraphicsComponent(kProtoSoldierName,
                                  std::shared_ptr<IGraphicsComponent>(
-                                     new SpriteGraphicsImplementation(sprite)));
+                                     new SpriteGraphicsImplementation(soldierSprite)));
     compMgr.AddPhysicsComponent(kProtoSoldierName,
                                 std::shared_ptr<IPhysicsComponent>(
                                     new PhysicsImplementation(world->GetMap())));
+    compMgr.AddControlComponent(kBulletName,
+                                std::shared_ptr<IControlComponent>(new LinearMoveControl));
+    compMgr.AddGraphicsComponent(kBulletName,
+                                 std::shared_ptr<IGraphicsComponent>(
+                                     new SpriteGraphicsImplementation(bulletSprite)));
+    compMgr.AddPhysicsComponent(kBulletName,
+                                std::shared_ptr<IPhysicsComponent>(new ProjectilePhysics));
 
     world->AddEntity(CreatePlayer(Vec3(window.GetWidth() * 0.5f, window.GetHeight() * 0.25f,
                                        kPi2)));
