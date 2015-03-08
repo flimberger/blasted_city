@@ -4,9 +4,9 @@ namespace blasted_city {
 
 IControlComponent::~IControlComponent() = default;
 
-void IControlComponent::Update(Entity &entity)
+void IControlComponent::Update(World &world, Entity &entity)
 {
-   return UpdateImpl(entity);
+   return UpdateImpl(world, entity);
 }
 
 } // namespace blasted_city

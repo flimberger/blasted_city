@@ -14,9 +14,14 @@ Entity::Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 po
 
 Entity::~Entity() = default;
 
-void Entity::Update()
+void Entity::Draw() const
 {
-  UpdateImpl();
+    graphics_->Draw(*this);
+}
+
+void Entity::Update(World &world)
+{
+  UpdateImpl(world);
 }
 
 const Vec3 &Entity::pose() const
@@ -49,11 +54,10 @@ void Entity::set_speed(Vec2 speed)
   speed_ = std::move(speed);
 }
 
-void Entity::UpdateImpl()
+void Entity::UpdateImpl(World &world)
 {
-  input_->Update(*this);
-  physics_->Update(*this);
-  graphics_->Draw(*this);
+  input_->Update(world, *this);
+  physics_->Update(world, *this);
 
   std::fprintf(stderr, "Entity::UpdateImpl: new Pose: (%f, %f, %f)\n", pose_.x, pose_.y, pose_.z);
 }

@@ -13,7 +13,7 @@ SpriteGraphicsImplementation::SpriteGraphicsImplementation(const SpritePtr &spri
 
 SpriteGraphicsImplementation::~SpriteGraphicsImplementation() = default;
 
-void SpriteGraphicsImplementation::DrawImpl(const Entity &entity)
+void SpriteGraphicsImplementation::DrawImpl(const Entity &entity) const
 {
   const auto &pose = entity.pose();
 

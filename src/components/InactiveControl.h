@@ -11,7 +11,7 @@ public:
     ~InactiveControl();
 
 private:
-    virtual void UpdateImpl(Entity &entity) override;
+    virtual void UpdateImpl(World &world, Entity &entity) override;
 };
 
 } // namespace blasted_city

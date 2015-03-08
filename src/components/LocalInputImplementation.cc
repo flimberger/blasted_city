@@ -41,7 +41,7 @@ static uint32_t g_key_map_table[] = {
 LocalInputImplementation::LocalInputImplementation() = default;
 LocalInputImplementation::~LocalInputImplementation() = default;
 
-void LocalInputImplementation::UpdateImpl(Entity &entity)
+void LocalInputImplementation::UpdateImpl(World &world, Entity &entity)
 {
   auto       *keys  = Window::GetInstance().key_states();
   auto        pose  = entity.pose();
@@ -71,16 +71,16 @@ void LocalInputImplementation::UpdateImpl(Entity &entity)
   }
   entity.set_pose(pose);
   if (keys[g_key_map_table[kAttack]]) {
-    static_cast<Soldier &>(entity).Attack();
+    static_cast<Soldier &>(entity).Attack(world);
   }
   if (keys[g_key_map_table[kInteract]]) {
-    static_cast<Soldier &>(entity).Interact();
+    static_cast<Soldier &>(entity).Interact(world);
   }
   if (keys[g_key_map_table[kReload]]) {
     static_cast<Soldier &>(entity).Reload();
   }
   if (keys[g_key_map_table[kSpecialAction]]) {
-    static_cast<Soldier &>(entity).SpecialAction();
+    static_cast<Soldier &>(entity).SpecialAction(world);
   }
 }
 

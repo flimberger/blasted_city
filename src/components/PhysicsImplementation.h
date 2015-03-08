@@ -14,7 +14,7 @@ public:
     ~PhysicsImplementation();
 
 private:
- virtual void UpdateImpl(Entity &entity) override;
+ virtual void UpdateImpl(World &world, Entity &entity) override;
 
     Map  *m_map;
 };

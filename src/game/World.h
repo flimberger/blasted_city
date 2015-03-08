@@ -19,7 +19,8 @@ class World
   ~World();
 
   void AddEntity(EntityPtr entity);
-  void Draw() const;
+  void Draw()   const;
+  void Update();
 
   Map *GetMap() const;
 

@@ -11,13 +11,9 @@ Burner::Burner(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 in
 
 Burner::~Burner() = default;
 
-void Burner::AttackImpl()
-{}
-
-void Burner::InteractImpl()
-{}
-
-void Burner::SpecialActionImpl()
-{}
+void Burner::SpecialActionImpl(World &world)
+{
+    (void) world;
+}
 
 } // namespace blasted_city

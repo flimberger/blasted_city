@@ -12,8 +12,10 @@ PhysicsImplementation::PhysicsImplementation(Map *map)
 
 PhysicsImplementation::~PhysicsImplementation() = default;
 
-void PhysicsImplementation::UpdateImpl(Entity &entity)
+void PhysicsImplementation::UpdateImpl(World &world, Entity &entity)
 {
+    (void) world;
+
   auto        pose = entity.pose();
   const auto &size = entity.size();
 

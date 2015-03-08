@@ -4,16 +4,17 @@
 namespace blasted_city {
 
 class Entity;
+class World;
 
 class IPhysicsComponent
 {
  public:
   virtual ~IPhysicsComponent();
 
-  void Update(Entity &entity);
+  void Update(World &world, Entity &entity);
 
  private:
-  virtual void UpdateImpl(Entity &entity) = 0;
+  virtual void UpdateImpl(World &world, Entity &entity) = 0;
 };
 
 } // namespace blasted_city

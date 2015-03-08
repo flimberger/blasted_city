@@ -1,5 +1,7 @@
 #include "Soldier.h"
 
+#include "World.h"
+
 #include "../engine/Sprite.h"
 
 namespace blasted_city {
@@ -49,14 +51,14 @@ Soldier::Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 
 
 Soldier::~Soldier() = default;
 
-void Soldier::Attack()
+void Soldier::Attack(World &world)
 {
-  AttackImpl();
+    (void) world;
 }
 
-void Soldier::Interact()
+void Soldier::Interact(World &world)
 {
-  InteractImpl();
+    (void) world;
 }
 
 void Soldier::Reload()
@@ -64,9 +66,9 @@ void Soldier::Reload()
   // primary_weapon_.Reload();
 }
 
-void Soldier::SpecialAction()
+void Soldier::SpecialAction(World &world)
 {
-  AttackImpl();
+  SpecialActionImpl(world);
 }
 
 uint16_t Soldier::hitpoints() const
@@ -102,9 +104,9 @@ bool Soldier::TakeItem(const ItemPtr &item)
   return inventory_.AddItem(item);
 }
 
-void Soldier::UpdateImpl()
+void Soldier::UpdateImpl(World &world)
 {
-  Entity::UpdateImpl();
+  Entity::UpdateImpl(world);
 }
 
 } // namespace blasted_city

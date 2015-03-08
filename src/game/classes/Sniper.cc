@@ -12,13 +12,9 @@ Sniper::Sniper(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 in
 
 Sniper::~Sniper() = default;
 
-void Sniper::AttackImpl()
-{}
-
-void Sniper::InteractImpl()
-{}
-
-void Sniper::SpecialActionImpl()
-{}
+void Sniper::SpecialActionImpl(World &world)
+{
+    (void) world;
+}
 
 } // namespace blasted_city

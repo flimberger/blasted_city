@@ -15,13 +15,16 @@ using GraphicsPtr = std::unique_ptr<IGraphicsComponent>;
 using InputPtr    = std::unique_ptr<IControlComponent>;
 using PhysicsPtr  = std::unique_ptr<IPhysicsComponent>;
 
+class World;
+
 class Entity
 {
  public:
   Entity() = delete;
   virtual ~Entity();
 
-  void Update();
+  void Draw() const;
+  void Update(World &world);
 
   const Vec3 &pose() const;
   const Vec2 &size() const;
@@ -34,7 +37,7 @@ class Entity
  protected:
   Entity(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 pose, Vec2 size);
 
-  virtual void UpdateImpl();
+  virtual void UpdateImpl(World &world);
 
  private:
   Vec3 pose_; // xy := position, z := rotation

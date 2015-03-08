@@ -12,13 +12,9 @@ Gunner::Gunner(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 in
 
 Gunner::~Gunner() = default;
 
-void Gunner::AttackImpl()
-{}
-
-void Gunner::InteractImpl()
-{}
-
-void Gunner::SpecialActionImpl()
-{}
+void Gunner::SpecialActionImpl(World &world)
+{
+    (void) world;
+}
 
 } // namespace blasted_city

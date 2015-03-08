@@ -18,9 +18,16 @@ void World::AddEntity(EntityPtr entity)
 
 void World::Draw() const
 {
-  for (auto &soldier : entities_) {
-    soldier->Update();
-  }
+    for (auto &entity : entities_) {
+        entity->Draw();
+    }
+}
+
+void World::Update()
+{
+    for (auto &entity : entities_) {
+        entity->Update(*this);
+    }
 }
 
 Map *World::GetMap() const

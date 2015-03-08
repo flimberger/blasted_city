@@ -8,6 +8,8 @@
 
 namespace blasted_city {
 
+class World;
+
 enum Rank
 {
     kRecruit     = 0,
@@ -27,10 +29,10 @@ class Soldier : public Entity
   Soldier() = delete;
   ~Soldier();
 
-  void Attack();
-  void Interact();
+  void Attack(World &world);
+  void Interact(World &world);
   void Reload();
-  void SpecialAction();
+  void SpecialAction(World &world);
 
   uint16_t hitpoints() const;
   uint16_t kill_count() const;
@@ -44,12 +46,10 @@ class Soldier : public Entity
   explicit Soldier(GraphicsPtr graphics, InputPtr input, PhysicsPtr physics, Vec3 initialPose,
                    uint16_t hitpoints);
 
-  virtual void UpdateImpl() override;
+  virtual void UpdateImpl(World &world) override;
 
  private:
-  virtual void AttackImpl() = 0;
-  virtual void InteractImpl() = 0;
-  virtual void SpecialActionImpl() = 0;
+  virtual void SpecialActionImpl(World &world) = 0;
 
   Inventory    inventory_;
   uint16_t     hitpoints_;

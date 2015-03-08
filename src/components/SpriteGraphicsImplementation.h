@@ -17,7 +17,7 @@ class SpriteGraphicsImplementation : public IGraphicsComponent
   ~SpriteGraphicsImplementation();
 
 private:
- virtual void DrawImpl(const Entity &entity) override;
+    virtual void DrawImpl(const Entity &entity) const override;
 
  SpritePtr  sprite_;
 };

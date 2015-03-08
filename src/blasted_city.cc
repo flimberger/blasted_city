@@ -60,6 +60,7 @@ int main() {
         }
         start = glfwGetTime();
         window.BeginFrame();
+        world->Update();
         world->Draw();
         window.EndFrame();
         sleep_time = start + MS_PER_FRAME - glfwGetTime();

@@ -15,9 +15,7 @@ class Gunner : public Soldier
  protected:
 
  private:
-  virtual void AttackImpl() override;
-  virtual void InteractImpl() override;
-  virtual void SpecialActionImpl() override;
+  virtual void SpecialActionImpl(World &world) override;
 };
 
 } // namespace blasted_city

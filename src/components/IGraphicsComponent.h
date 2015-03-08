@@ -12,10 +12,10 @@ class IGraphicsComponent
 public:
     virtual ~IGraphicsComponent();
 
-    void Draw(const Entity &entity);
+    void Draw(const Entity &entity) const;
 
 private:
-    virtual void DrawImpl(const Entity &entity) = 0;
+    virtual void DrawImpl(const Entity &entity) const = 0;
 };
 
 } // namespace blasted_city
