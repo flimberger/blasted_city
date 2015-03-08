@@ -12,6 +12,8 @@ using ShaderPtr = std::shared_ptr<Shader>;
 class Texture;
 using TexturePtr = std::shared_ptr<Texture>;
 
+constexpr auto kBlackPixel = "blackPixel";
+
 class ResourceManager
 {
 public:

@@ -5,7 +5,12 @@
 
 namespace blasted_city {
 
-ResourceManager::ResourceManager() = default;
+ResourceManager::ResourceManager()
+{
+    u_char blackData[] = { 0, 0, 0 };
+
+    m_textures[kBlackPixel] = TexturePtr(Texture::CreateFromData(1, 1, blackData, kU8rgb));
+}
 
 ResourceManager::~ResourceManager()
 {
