@@ -4,35 +4,72 @@
 
 namespace blasted_city {
 
-static constexpr size_t kNumberOfKeys  = 512;
+namespace {
+
 static constexpr int    kWindowWidth   = 800;
 static constexpr int    kWindowHeight  = 600;
 static const     char  *kWindowTitle   ="Blasted City";
 
-static bool    g_key_press_table[kNumberOfKeys];
+static const int  kGLFWTranslationTable[] = {
+    // numbers
+    GLFW_KEY_0, // kKey0
+    GLFW_KEY_1, // kKey1
+    GLFW_KEY_2, // kKey2
+    GLFW_KEY_3, // kKey3
+    GLFW_KEY_4, // kKey4
+    GLFW_KEY_5, // kKey5
+    GLFW_KEY_6, // kKey6
+    GLFW_KEY_7, // kKey7
+    GLFW_KEY_8, // kKey8
+    GLFW_KEY_9, // kKey9
+    // letters
+    GLFW_KEY_A, // kKeyA
+    GLFW_KEY_B, // kKeyB
+    GLFW_KEY_C, // kKeyC
+    GLFW_KEY_D, // kKeyD
+    GLFW_KEY_E, // kKeyE
+    GLFW_KEY_F, // kKeyF
+    GLFW_KEY_G, // kKeyG
+    GLFW_KEY_H, // kKeyH
+    GLFW_KEY_I, // kKeyI
+    GLFW_KEY_J, // kKeyJ
+    GLFW_KEY_K, // kKeyK
+    GLFW_KEY_L, // kKeyL
+    GLFW_KEY_M, // kKeyM
+    GLFW_KEY_N, // kKeyN
+    GLFW_KEY_O, // kKeyO
+    GLFW_KEY_P, // kKeyP
+    GLFW_KEY_Q, // kKeyQ
+    GLFW_KEY_R, // kKeyR
+    GLFW_KEY_S, // kKeyS
+    GLFW_KEY_T, // kKeyT
+    GLFW_KEY_U, // kKeyU
+    GLFW_KEY_V, // kKeyV
+    GLFW_KEY_W, // kKeyW
+    GLFW_KEY_X, // kKeyX
+    GLFW_KEY_Y, // kKeyY
+    GLFW_KEY_Z, // kKeyZ
+    // stuff
+    GLFW_KEY_ENTER,         // kKeyEnter
+    GLFW_KEY_ESCAPE,        // kKeyEscape
+    GLFW_KEY_LEFT_ALT,      // kKeyLeftAlt
+    GLFW_KEY_LEFT_CONTROL,  // kKeyLeftControl
+    GLFW_KEY_LEFT_SHIFT,    // kKeyLeftShift
+    GLFW_KEY_RIGHT_ALT,     // kKeyRightAlt
+    GLFW_KEY_RIGHT_CONTROL, // kKeyRightControl
+    GLFW_KEY_RIGHT_SHIFT,   // kKeyRightShift
+    GLFW_KEY_SPACE,         // kKeySpace
+    // arrows
+    GLFW_KEY_UP,    // kKeyUp
+    GLFW_KEY_LEFT,  // kKeyLeft
+    GLFW_KEY_DOWN,  // kKeyDown
+    GLFW_KEY_RIGHT, // kKeyRight
+};
 
-void KeyCallback(GLFWwindow *window, int key, int scan_code, int action, int mode)
-{
-  (void) window;
-  (void) scan_code;
-  (void) mode;
-
-  if (action == GLFW_PRESS) {
-    g_key_press_table[key] = true;
-  } else if (action == GLFW_RELEASE){
-    g_key_press_table[key] = false;
-  }
-}
-
-void MouseCallback(GLFWwindow *window, double x_position, double y_position)
-{
-  (void) window;
-  (void) x_position;
-  (void) y_position;
-}
+} // namespace
 
 WindowImpl::WindowImpl()
-  : window_(nullptr)
+  : m_window(nullptr)
 {
     if (!glfwInit()) {
         Terminate("Graphics Error: Failed to initialize GLFW");
@@ -41,11 +78,11 @@ WindowImpl::WindowImpl()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    window_ = glfwCreateWindow(kWindowWidth, kWindowHeight, kWindowTitle, NULL, NULL);
-    if (!window_) {
+    m_window = glfwCreateWindow(kWindowWidth, kWindowHeight, kWindowTitle, NULL, NULL);
+    if (!m_window) {
         Terminate("Graphics Error: Failed to create GLFW window");
     }
-    glfwMakeContextCurrent(window_);
+    glfwMakeContextCurrent(m_window);
     glewExperimental = GL_TRUE;
 
     GLenum err = glewInit();
@@ -55,8 +92,6 @@ WindowImpl::WindowImpl()
                   + std::string(reinterpret_cast<const char *>(glewGetErrorString(err))));
     }
     glViewport(0, 0, kWindowWidth, kWindowHeight);
-    glfwSetKeyCallback(window_, KeyCallback);
-    glfwSetCursorPosCallback(window_, MouseCallback);
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -65,14 +100,14 @@ WindowImpl::WindowImpl()
 
 WindowImpl::~WindowImpl()
 {
-  Shutdown();
+    Shutdown();
 }
 
 size_t WindowImpl::GetHeight() const
 {
     int height;
 
-    glfwGetWindowSize(window_, NULL, &height);
+    glfwGetWindowSize(m_window, NULL, &height);
 
     return static_cast<size_t>(height);
 }
@@ -81,38 +116,60 @@ size_t WindowImpl::GetWidth() const
 {
     int width;
 
-    glfwGetWindowSize(window_, &width, NULL);
+    glfwGetWindowSize(m_window, &width, NULL);
 
     return static_cast<size_t>(width);
 }
 
-bool WindowImpl::is_open() const
+bool WindowImpl::IsOpen() const
 {
-  return !glfwWindowShouldClose(window_);
+    return !glfwWindowShouldClose(m_window);
 }
 
-void WindowImpl::BeginFrame() const
+void WindowImpl::BeginFrame()
 {
-  glfwPollEvents();
-  glClear(GL_COLOR_BUFFER_BIT);
+    glfwPollEvents();
+    ProcessKeys();
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
-bool *WindowImpl::key_states() const
+const KeyState *WindowImpl::GetKeyStates() const
 {
-  return &g_key_press_table[0];
+    return &m_keyPressTable[0];
 }
 
 void WindowImpl::EndFrame() const
 {
-  glfwSwapBuffers(window_);
+    glfwSwapBuffers(m_window);
 }
 
 void WindowImpl::Shutdown()
 {
-  if (window_) {
-    glfwTerminate();
-    window_ = nullptr;
-  }
+    if (m_window) {
+        glfwTerminate();
+        m_window = nullptr;
+    }
+}
+
+void WindowImpl::ProcessKeys()
+{
+    for (u_int key = kKey0; key < kNumberOfKeySymbols; ++key) {
+        bool keyPressed = glfwGetKey(m_window, kGLFWTranslationTable[key]);
+
+        if (keyPressed) {
+            if (!std::get<kKeyPressed>(m_keyPressTable[key])) {
+                m_keyPressTable[key] = std::make_tuple(true, true, false);
+            } else {
+                m_keyPressTable[key] = std::make_tuple(true, false, false);
+            }
+        } else {
+            if (std::get<kKeyPressed>(m_keyPressTable[key])) {
+                m_keyPressTable[key] = std::make_tuple(false, false, true);
+            } else {
+                m_keyPressTable[key] = std::make_tuple(false, false, false);
+            }
+        }
+    }
 }
 
 } // namespace blasted_city

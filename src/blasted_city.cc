@@ -83,7 +83,7 @@ int main() {
     auto startTime     = 0.0; // s
 
     while (true) {
-        if (!window.is_open()) {
+        if (!window.IsOpen()) {
             break;
         }
         startTime = glfwGetTime();

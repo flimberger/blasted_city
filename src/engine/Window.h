@@ -8,32 +8,100 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <array>
+#include <tuple>
+
 namespace blasted_city {
+
+enum KeySymbol {
+    // numbers
+    kKey0,
+    kKey1,
+    kKey2,
+    kKey3,
+    kKey4,
+    kKey5,
+    kKey6,
+    kKey7,
+    kKey8,
+    kKey9,
+    // letters
+    kKeyA,
+    kKeyB,
+    kKeyC,
+    kKeyD,
+    kKeyE,
+    kKeyF,
+    kKeyG,
+    kKeyH,
+    kKeyI,
+    kKeyJ,
+    kKeyK,
+    kKeyL,
+    kKeyM,
+    kKeyN,
+    kKeyO,
+    kKeyP,
+    kKeyQ,
+    kKeyR,
+    kKeyS,
+    kKeyT,
+    kKeyU,
+    kKeyV,
+    kKeyW,
+    kKeyX,
+    kKeyY,
+    kKeyZ,
+    // stuff
+    kKeyEnter,
+    kKeyEscape,
+    kKeyLeftAlt,
+    kKeyLeftControl,
+    kKeyLeftShift,
+    kKeyRightAlt,
+    kKeyRightControl,
+    kKeyRightShift,
+    kKeySpace,
+    // arrows
+    kKeyUp,
+    kKeyLeft,
+    kKeyDown,
+    kKeyRight,
+    // Number of keys
+    kNumberOfKeySymbols
+};
+
+enum KeyStateAttrib {
+    kKeyPressed,
+    kKeyFlankDown,
+    kKeyFlankUp
+};
+
+using KeyState = std::tuple<bool, bool, bool>;
 
 class WindowImpl
 {
- public:
+public:
     WindowImpl(const WindowImpl &) = delete;
     ~WindowImpl();
 
-    size_t  GetHeight() const;
-    size_t  GetWidth() const;
-  bool         is_open() const;
-  bool        *key_states() const;
-
-  void         BeginFrame() const;
-  void         EndFrame() const;
-
-  void         Shutdown();
+    size_t          GetHeight() const;
+    size_t          GetWidth() const;
+    bool            IsOpen() const;
+    const KeyState *GetKeyStates() const;
+    void            BeginFrame();
+    void            EndFrame() const;
+    void            Shutdown();
 
 private:
     friend class Singleton<WindowImpl>;
 
     WindowImpl();
 
-  void Init();
+    void ProcessKeys();
 
-  GLFWwindow  *window_;
+    GLFWwindow                               *m_window;
+    std::array<KeyState, kNumberOfKeySymbols> m_keyPressTable;
 };
 
 using Window = Singleton<WindowImpl>;
