@@ -5,6 +5,7 @@ pkg_search_module(GLFW REQUIRED glfw3)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 
+add_subdirectory(base)
 add_subdirectory(components)
 add_subdirectory(engine)
 add_subdirectory(game)

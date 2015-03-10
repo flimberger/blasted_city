@@ -31,7 +31,7 @@ void MouseCallback(GLFWwindow *window, double x_position, double y_position)
   (void) y_position;
 }
 
-Window::Window()
+WindowImpl::WindowImpl()
   : window_(nullptr)
 {
     if (!glfwInit()) {
@@ -63,19 +63,12 @@ Window::Window()
     glClearColor(0.1f, 0.05f, 0.025f, 1.0f);
 }
 
-Window::~Window()
+WindowImpl::~WindowImpl()
 {
   Shutdown();
 }
 
-Window &Window::GetInstance()
-{
-  static Window s_instance;
-
-  return s_instance;
-}
-
-size_t Window::GetHeight() const
+size_t WindowImpl::GetHeight() const
 {
     int height;
 
@@ -84,7 +77,7 @@ size_t Window::GetHeight() const
     return static_cast<size_t>(height);
 }
 
-size_t Window::GetWidth() const
+size_t WindowImpl::GetWidth() const
 {
     int width;
 
@@ -93,28 +86,28 @@ size_t Window::GetWidth() const
     return static_cast<size_t>(width);
 }
 
-bool Window::is_open() const
+bool WindowImpl::is_open() const
 {
   return !glfwWindowShouldClose(window_);
 }
 
-void Window::BeginFrame() const
+void WindowImpl::BeginFrame() const
 {
   glfwPollEvents();
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-bool *Window::key_states() const
+bool *WindowImpl::key_states() const
 {
   return &g_key_press_table[0];
 }
 
-void Window::EndFrame() const
+void WindowImpl::EndFrame() const
 {
   glfwSwapBuffers(window_);
 }
 
-void Window::Shutdown()
+void WindowImpl::Shutdown()
 {
   if (window_) {
     glfwTerminate();

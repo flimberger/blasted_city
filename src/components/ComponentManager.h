@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../base/Singleton.h"
+
 #include <map>
 #include <memory>
 #include <string>
@@ -14,12 +16,10 @@ using ControlPtr  = std::shared_ptr<IControlComponent>;
 using GraphicsPtr = std::shared_ptr<IGraphicsComponent>;
 using PhysicsPtr  = std::shared_ptr<IPhysicsComponent>;
 
-class ComponentManager
+class ComponentManagerImpl
 {
 public:
-    ~ComponentManager();
-
-    static ComponentManager &GetInstance();
+    ~ComponentManagerImpl();
 
     void AddControlComponent(const std::string &id,
                              const ControlPtr &controlPtr);
@@ -33,11 +33,15 @@ public:
     const PhysicsPtr  &GetPhysicsComponent(const std::string &id);
 
 private:
-    ComponentManager();
+    friend class Singleton<ComponentManagerImpl>;
+
+    ComponentManagerImpl();
 
     std::map<std::string, ControlPtr>   m_controlComponents;
     std::map<std::string, GraphicsPtr>  m_graphicsComponents;
     std::map<std::string, PhysicsPtr>   m_physicsComponents;
 };
+
+using ComponentManager = Singleton<ComponentManagerImpl>;
 
 } // namespace blasted_city

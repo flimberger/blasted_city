@@ -2,6 +2,8 @@
 
 #include "../global.h"
 
+#include "../base/Singleton.h"
+
 #include <map>
 
 namespace blasted_city {
@@ -14,10 +16,10 @@ using TexturePtr = std::shared_ptr<Texture>;
 
 constexpr auto kBlackPixel = "blackPixel";
 
-class ResourceManager
+class ResourceManagerImpl
 {
 public:
-    ~ResourceManager();
+    ~ResourceManagerImpl();
 
     void                    Clear();
     void                    CreateShader(const std::string &id,
@@ -26,15 +28,18 @@ public:
                                          const std::string &geometryShaderSourceFile);
     void                    CreateTexture(const std::string &id,
                                           const std::string &imageFile);
-    static ResourceManager &GetInstance();
     ShaderPtr               GetShader(const std::string &id) const;
     TexturePtr              GetTexture(const std::string &id) const;
 
 private:
-    ResourceManager();
+    friend class Singleton<ResourceManagerImpl>;
+
+    ResourceManagerImpl();
 
     std::map<std::string, ShaderPtr>  m_shaders;
     std::map<std::string, TexturePtr> m_textures;
 };
+
+using ResourceManager = Singleton<ResourceManagerImpl>;
 
 } // namespace blasted_city

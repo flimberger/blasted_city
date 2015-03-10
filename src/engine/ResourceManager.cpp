@@ -5,28 +5,28 @@
 
 namespace blasted_city {
 
-ResourceManager::ResourceManager()
+ResourceManagerImpl::ResourceManagerImpl()
 {
     u_char blackData[] = { 0, 0, 0 };
 
     m_textures[kBlackPixel] = TexturePtr(Texture::CreateFromData(1, 1, blackData, kU8rgb));
 }
 
-ResourceManager::~ResourceManager()
+ResourceManagerImpl::~ResourceManagerImpl()
 {
     Clear();
 }
 
-void ResourceManager::Clear()
+void ResourceManagerImpl::Clear()
 {
     m_shaders.clear();
     m_textures.clear();
 }
 
-void ResourceManager::CreateShader(const std::string &id,
-                                   const std::string &vertexShaderSourceFile,
-                                   const std::string &fragmentShaderSourceFile,
-                                   const std::string &geometryShaderSourceFile)
+void ResourceManagerImpl::CreateShader(const std::string &id,
+                                       const std::string &vertexShaderSourceFile,
+                                       const std::string &fragmentShaderSourceFile,
+                                       const std::string &geometryShaderSourceFile)
 {
     m_shaders[id] = ShaderPtr(Shader::Create(ReadTextFile(vertexShaderSourceFile),
                                              ReadTextFile(fragmentShaderSourceFile),
@@ -35,8 +35,8 @@ void ResourceManager::CreateShader(const std::string &id,
                                              : ReadTextFile(geometryShaderSourceFile)));
 }
 
-void ResourceManager::CreateTexture(const std::string &id,
-                                    const std::string &imageFile)
+void ResourceManagerImpl::CreateTexture(const std::string &id,
+                                        const std::string &imageFile)
 {
     if (imageFile.rfind(".png") == imageFile.length() - 4) {
         m_textures[id] = TexturePtr(Texture::CreateFromPNGFile(imageFile));
@@ -46,19 +46,12 @@ void ResourceManager::CreateTexture(const std::string &id,
     }
 }
 
-ResourceManager &ResourceManager::GetInstance()
-{
-    static ResourceManager s_instance;
-
-    return s_instance;
-}
-
-ShaderPtr ResourceManager::GetShader(const std::string &id) const
+ShaderPtr ResourceManagerImpl::GetShader(const std::string &id) const
 {
     return m_shaders.at(id);
 }
 
-TexturePtr ResourceManager::GetTexture(const std::string &id) const
+TexturePtr ResourceManagerImpl::GetTexture(const std::string &id) const
 {
     return m_textures.at(id);
 }

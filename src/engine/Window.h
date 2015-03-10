@@ -3,18 +3,18 @@
 
 #include "../global.h"
 
+#include "../base/Singleton.h"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 namespace blasted_city {
 
-class Window
+class WindowImpl
 {
  public:
-  Window(const Window &) = delete;
-  ~Window();
-
-    static Window &GetInstance();
+    WindowImpl(const WindowImpl &) = delete;
+    ~WindowImpl();
 
     size_t  GetHeight() const;
     size_t  GetWidth() const;
@@ -26,15 +26,17 @@ class Window
 
   void         Shutdown();
 
- private:
-  Window();
+private:
+    friend class Singleton<WindowImpl>;
+
+    WindowImpl();
 
   void Init();
 
   GLFWwindow  *window_;
-
-  friend class Window;
 };
+
+using Window = Singleton<WindowImpl>;
 
 } // namespace blasted_city
 
