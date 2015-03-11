@@ -43,7 +43,7 @@ LocalInputImplementation::~LocalInputImplementation() = default;
 
 void LocalInputImplementation::UpdateImpl(World &world, Entity &entity)
 {
-  auto       *keys  = Window::GetInstance().GetKeyStates();
+  auto       &keys  = Window::GetInstance().GetKeyStates();
   auto        pose  = entity.GetPose();
   const auto &speed = entity.GetSpeed();
 

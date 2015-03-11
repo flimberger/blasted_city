@@ -133,9 +133,9 @@ void WindowImpl::BeginFrame()
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-const KeyState *WindowImpl::GetKeyStates() const
+const std::array<KeyState, kNumberOfKeySymbols> &WindowImpl::GetKeyStates() const
 {
-    return &m_keyPressTable[0];
+    return m_keyPressTable;
 }
 
 void WindowImpl::EndFrame() const

@@ -88,7 +88,7 @@ public:
     size_t          GetHeight() const;
     size_t          GetWidth() const;
     bool            IsOpen() const;
-    const KeyState *GetKeyStates() const;
+    const std::array<KeyState, kNumberOfKeySymbols> &GetKeyStates() const;
     void            BeginFrame();
     void            EndFrame() const;
     void            Shutdown();
