@@ -25,24 +25,56 @@
 
 #include <unistd.h>
 
+#include <cstdlib>
+#include <cstdio>
+#include <iterator>
+#include <string>
+
 using namespace blasted_city;
 
-static constexpr auto PROTO_SOLDIER_BITMAP_FILE   = "/home/flo/devel/blasted_city/assets/sprites/proto_soldier.png";
-static constexpr auto SPRITE_FRAGMENT_SHADER_FILE = "/home/flo/devel/blasted_city/src/shaders/sprite.fragment.glsl";
-static constexpr auto SPRITE_VERTEX_SHADER_FILE   = "/home/flo/devel/blasted_city/src/shaders/sprite.vertex.glsl";
-static constexpr auto SPRITE_SHADER               = "spriteShader";
-static constexpr auto MS_PER_FRAME                = 1000.0 / 60.0;
+static constexpr auto *ASSET_PATH                  = "BLASTED_CITY_ASSET_PATH";
+static constexpr auto PATH_SEPARATOR               = '/';
+static constexpr auto *PROTO_SOLDIER_BITMAP_FILE   = "assets/sprites/proto_soldier.png";
+static constexpr auto *SPRITE_FRAGMENT_SHADER_FILE = "src/shaders/sprite.fragment.glsl";
+static constexpr auto *SPRITE_VERTEX_SHADER_FILE   = "src/shaders/sprite.vertex.glsl";
+static constexpr auto *SPRITE_SHADER               = "spriteShader";
+static constexpr auto MS_PER_FRAME                 = 1000.0 / 60.0;
+
+static const char *progname;
 
 static std::unique_ptr<Entity> CreateOpponent(const Vec3 &initialPose);
 static std::unique_ptr<Entity> CreatePlayer(const Vec3 &initialPose);
 
-int main() {
-    auto &window = Window::GetInstance();
-    auto &resMgr = ResourceManager::GetInstance();
+int main(int argc, char *argv[]) {
+    (void) argc;
 
-    resMgr.CreateShader(SPRITE_SHADER, SPRITE_VERTEX_SHADER_FILE, SPRITE_FRAGMENT_SHADER_FILE,
+    progname = argv[0];
+
+    auto assets_path = std::string();
+    const auto *assets_env = std::getenv(ASSET_PATH);
+
+    if (assets_env)
+        assets_path = assets_env;
+    else {
+        // TODO: fix logging
+        std::fprintf(stderr, "%s: environment variable %s not set\n", progname, ASSET_PATH);
+
+        const auto *cwd = getcwd(nullptr, 0); // memory must be freed
+
+        assets_path = std::string(cwd);
+        std::free(reinterpret_cast<void *>(const_cast<char *>(cwd)));
+    }
+    if (*--std::cend(assets_path) != PATH_SEPARATOR)
+        assets_path.append(&PATH_SEPARATOR);
+
+    auto &resMgr = ResourceManager::GetInstance();
+    auto sprite_vertex_shader_file = assets_path + SPRITE_VERTEX_SHADER_FILE;
+    auto sprite_fragment_shader_file = assets_path + SPRITE_FRAGMENT_SHADER_FILE;
+    auto proto_soldier_bitmap_file = assets_path + PROTO_SOLDIER_BITMAP_FILE;
+
+    resMgr.CreateShader(SPRITE_SHADER, sprite_vertex_shader_file, sprite_fragment_shader_file,
                          std::string());
-    resMgr.CreateTexture(kProtoSoldierName, PROTO_SOLDIER_BITMAP_FILE);
+    resMgr.CreateTexture(kProtoSoldierName, proto_soldier_bitmap_file);
 
     auto  soldierSprite = std::make_shared<Sprite>(resMgr.GetShader(SPRITE_SHADER),
                                                    resMgr.GetTexture(kProtoSoldierName));
@@ -66,6 +98,8 @@ int main() {
                                      new SpriteGraphicsImplementation(bulletSprite)));
     compMgr.AddPhysicsComponent(kBulletName,
                                 std::shared_ptr<IPhysicsComponent>(new ProjectilePhysics));
+
+    auto &window = Window::GetInstance();
 
     world->AddEntity(CreatePlayer(Vec3(window.GetWidth() * 0.5f, window.GetHeight() * 0.25f,
                                        kPi2)));
