@@ -67,6 +67,10 @@ int main(int argc, char *argv[]) {
     if (*--std::cend(assets_path) != PATH_SEPARATOR)
         assets_path.append(&PATH_SEPARATOR);
 
+    // This contains the OpenGL initialization code, so must be called before the shaders are
+    // created.
+    auto &window = Window::GetInstance();
+
     auto &resMgr = ResourceManager::GetInstance();
     auto sprite_vertex_shader_file = assets_path + SPRITE_VERTEX_SHADER_FILE;
     auto sprite_fragment_shader_file = assets_path + SPRITE_FRAGMENT_SHADER_FILE;
@@ -98,8 +102,6 @@ int main(int argc, char *argv[]) {
                                      new SpriteGraphicsImplementation(bulletSprite)));
     compMgr.AddPhysicsComponent(kBulletName,
                                 std::shared_ptr<IPhysicsComponent>(new ProjectilePhysics));
-
-    auto &window = Window::GetInstance();
 
     world->AddEntity(CreatePlayer(Vec3(window.GetWidth() * 0.5f, window.GetHeight() * 0.25f,
                                        kPi2)));
