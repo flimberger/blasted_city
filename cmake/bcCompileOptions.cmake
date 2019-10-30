@@ -1,0 +1,16 @@
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(warning_flags "-Weverything -Wno-c++98-compat -Wno-exit-time-destructors -Wno-missing-prototypes -Wno-padded")
+    set(feature_flags "-fno-exceptions -fno-rtti")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(warning_flags "-Wall -Wextra")
+    set(feature_flags "-fno-exceptions -fno-rtti")
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${feature_flags}")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "${warning_flags} ${CMAKE_CXX_FLAGS}")
+endif()

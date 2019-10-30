@@ -1,5 +1,3 @@
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 find_package(JPEG REQUIRED)
@@ -13,12 +11,11 @@ add_subdirectory(game)
 
 add_executable(blasted_city blasted_city.cc global.cc)
 target_link_libraries(blasted_city
-  components
-  engine
-  game
+    components
+    engine
+    game
 #   physics
-  ${GLEW_LIBRARIES}
-  ${GLFW_STATIC_LIBRARIES}
-  ${PNG_LIBRARIES}
-  ${JPEG_LIBRARIES}
+    ${GLFW_STATIC_LIBRARIES}
+    PNG::PNG
+    JPEG::JPEG
 )

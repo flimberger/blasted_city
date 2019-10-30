@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(blasted_city)
+cmake_policy(SET CMP0072 NEW)
 
-# currently only valid on FreeBSD 10.1
-add_definitions("-std=c++14")
-add_definitions("-Weverything -Werror -Wno-c++98-compat -Wno-exit-time-destructors -Wno-missing-prototypes -Wno-padded")
-add_definitions("-fno-exceptions -fno-rtti")
-add_definitions("-isystem /usr/local/include")
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+project(BlastedCity)
+
+include(bcCompileOptions)
 
 add_subdirectory(src)
