@@ -1,3 +1,4 @@
 *.png
 
 CMakeLists.txt.user
+/build
